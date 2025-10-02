@@ -9,7 +9,6 @@ export default function PropertyListItem({
     <li
       className={`flex px-2 py-2 rounded-lg overflow-hidden shadow-sm hover:shadow-lg cursor-pointer transition
         ${highlighted ? " bg-emerald-100" : ""}
-        ${selected ? "ring-2 ring-main" : ""}
       `}
       onClick={onClick}
     >
@@ -27,6 +26,11 @@ export default function PropertyListItem({
         )}
       </div>
       <div className="flex-1 p-3">
+        {highlighted && (
+          <div className="text-xs text-white bg-main px-2 py-0.5 rounded-full inline-block mb-1">
+            추천
+          </div>
+        )}
         <div className="font-bold text-lg">{property.title}</div>
         <div className="text-main font-semibold mt-1">
           {property.price_type} {property.price?.toLocaleString()}

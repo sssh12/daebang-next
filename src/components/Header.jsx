@@ -109,14 +109,14 @@ export default function Header() {
           </div>
           <button
             onClick={handleLogout}
-            className="cursor-pointer hidden md:block bg-main text-base px-5 py-2 rounded-full hover:bg-accent active:scale-98 transition "
+            className="cursor-pointer hidden md:block bg-main text-white px-5 py-2 rounded-full hover:bg-accent active:scale-98 transition "
           >
             로그아웃
           </button>
         </div>
       ) : (
         <Link href="/login">
-          <button className="cursor-pointer hidden md:block bg-main text-base px-5 py-2 rounded-full hover:bg-accent active:scale-98 transition ">
+          <button className="cursor-pointer hidden md:block bg-main text-white px-5 py-2 rounded-full hover:bg-accent active:scale-98 transition ">
             로그인
           </button>
         </Link>

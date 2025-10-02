@@ -33,12 +33,17 @@ export default function Sidebar({
 
   const highlightedIds = useMemo(() => {
     if (!filterValues) return new Set();
-    if (filterValues.department && departmentBuildings.length > 0) {
-      const DIST_LIMIT = 400;
-      const building = departmentBuildings[0];
-      return new Set(
-        properties
-          .filter((p) => {
+
+    const activeFilters = Object.entries(filterValues).filter(([key, value]) =>
+      isActiveFilter(key, value)
+    );
+
+    return new Set(
+      properties
+        .filter((p) => {
+          if (filterValues.department && departmentBuildings.length > 0) {
+            const DIST_LIMIT = 400;
+            const building = departmentBuildings[0];
             if (!p.lat || !p.lng) return false;
             const dist = getDistance(
               Number(building.building_lat),
@@ -46,31 +51,15 @@ export default function Sidebar({
               p.lat,
               p.lng
             );
-            return dist <= DIST_LIMIT;
-          })
-          .map((p) => p.id)
-      );
-    }
-    const activeFilters = Object.entries(filterValues).filter(([key, value]) =>
-      isActiveFilter(key, value)
-    );
-    if (activeFilters.length === 1) {
-      const [key, value] = activeFilters[0];
-      return new Set(
-        properties
-          .filter((p) =>
-            filterComparators[key] ? filterComparators[key](p, value) : true
-          )
-          .map((p) => p.id)
-      );
-    }
-    return new Set(
-      properties
-        .filter((p) =>
-          activeFilters.every(([key, value]) =>
-            filterComparators[key] ? filterComparators[key](p, value) : true
-          )
-        )
+            if (dist > DIST_LIMIT) return false;
+          }
+          return activeFilters.every(([key, value]) => {
+            if (key === "department") return true;
+            return filterComparators[key]
+              ? filterComparators[key](p, value)
+              : true;
+          });
+        })
         .map((p) => p.id)
     );
   }, [properties, filterValues, departmentBuildings]);

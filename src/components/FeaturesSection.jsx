@@ -8,7 +8,7 @@ const FeatureCard = ({ icon, title, children }) => (
 
 export default function FeaturesSection() {
   return (
-    <section className="py-16 md:py-20 px-4 sm:px-8 bg-gray-300">
+    <section className="py-16 md:py-20 px-4 sm:px-8 bg-[#F8FFF8]">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold text-text">
