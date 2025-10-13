@@ -16,12 +16,12 @@ export default function PropertyDetail({ property, onClose }) {
             <img
               src={images[imgIdx]}
               alt={`매물 이미지 ${imgIdx + 1}`}
-              className="object-cover w-full h-full rounded-t-lg"
+              className="object-cover w-full h-full"
             />
             {images.length > 1 && (
               <>
                 <button
-                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 rounded-full px-2 py-1"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 rounded-full px-2 py-1 cursor-pointer"
                   onClick={() =>
                     setImgIdx((i) => (i === 0 ? images.length - 1 : i - 1))
                   }
@@ -29,7 +29,7 @@ export default function PropertyDetail({ property, onClose }) {
                   ◀
                 </button>
                 <button
-                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/70 rounded-full px-2 py-1"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/70 rounded-full px-2 py-1 cursor-pointer"
                   onClick={() =>
                     setImgIdx((i) => (i === images.length - 1 ? 0 : i + 1))
                   }
@@ -53,7 +53,7 @@ export default function PropertyDetail({ property, onClose }) {
           <div className="text-gray-400">No Image</div>
         )}
         <button
-          className="absolute top-2 right-2 text-gray-400 hover:text-main text-2xl"
+          className="absolute rounded-full border border-main top-2 right-2 text-white hover:text-accent text-2xl cursor-pointer w-8 h-8 flex items-center justify-center bg-gray-700/80 transition"
           onClick={onClose}
         >
           ×
@@ -111,6 +111,11 @@ export default function PropertyDetail({ property, onClose }) {
         <div className="mt-2 text-gray-700 text-sm whitespace-pre-line">
           {property.description}
         </div>
+      </div>
+      <div className="p-4 border-t flex gap-2">
+        <button className="flex-1 bg-main hover:bg-accent text-white py-2 rounded active:scale-98 transition cursor-pointer">
+          문의하기
+        </button>
       </div>
     </div>
   );

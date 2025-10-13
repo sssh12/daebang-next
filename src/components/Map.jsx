@@ -93,14 +93,9 @@ export default function Map({
       if (group.length === 1) {
         const property = group[0];
         const isHighlighted = highlightedIds.has(property.id);
-        const isHovered = hoveredId === property.id;
-        const isActive = activeId === property.id;
 
         const div = createMarkerOverlay({
-          property,
           isHighlighted,
-          isHovered,
-          isActive,
           onHover: () => setHoveredId(property.id),
           onLeave: () => setHoveredId(null),
           onClick: () => {
@@ -131,8 +126,6 @@ export default function Map({
         );
 
         const div = createClusterOverlay({
-          centerLat,
-          centerLng,
           hasRecommended,
           count: group.length,
           onClick: () => {

@@ -3,40 +3,44 @@ import MarkerIcon from "@/components/MarkerIcon";
 import ClusterIcon from "@/components/ClusterIcon";
 
 export function createMarkerOverlay({
-  property,
   isHighlighted,
-  isHovered,
-  isActive,
   onHover,
   onLeave,
   onClick,
 }) {
-  const scale = isActive ? 1.2 : isHovered ? 1.1 : 1;
   const div = document.createElement("div");
   div.innerHTML = renderToStaticMarkup(
     <MarkerIcon recommended={isHighlighted} />
   );
-  div.style.width = "40px";
-  div.style.height = "40px";
-  div.style.display = "flex";
-  div.style.alignItems = "center";
-  div.style.justifyContent = "center";
-  div.style.transition = "transform 0.2s cubic-bezier(.4,2,.6,1)";
-  div.style.transform = `scale(${scale})`;
-  div.style.cursor = "pointer";
-  div.onmouseenter = onHover;
-  div.onmouseleave = onLeave;
+  div.style.cssText = `
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform .17s cubic-bezier(.2,1,.2,1), background .17s;
+    will-change: transform;
+  `;
+  div.onmouseenter = () => {
+    div.style.transform = "scale(1.12)";
+    if (onHover) onHover();
+  };
+  div.onmouseleave = () => {
+    div.style.transform = "";
+    if (onLeave) onLeave();
+  };
+  div.onmousedown = () => {
+    div.style.transform = "scale(1.16)";
+  };
+  div.onmouseup = () => {
+    div.style.transform = "scale(1.12)";
+  };
   div.onclick = onClick;
   return div;
 }
 
-export function createClusterOverlay({
-  centerLat,
-  centerLng,
-  hasRecommended,
-  count,
-  onClick,
-}) {
+export function createClusterOverlay({ hasRecommended, count, onClick }) {
   const div = document.createElement("div");
   div.innerHTML = renderToStaticMarkup(
     <ClusterIcon recommended={hasRecommended} count={count} />

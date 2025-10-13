@@ -10,7 +10,7 @@ export default function FeaturesSection() {
   return (
     <section className="py-16 md:py-20 px-4 sm:px-8 bg-[#F8FFF8]">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
+        <div className="text-center mb-12 transition">
           <h2 className="text-3xl sm:text-4xl font-bold text-text">
             이런 경험 있으신가요?
           </h2>

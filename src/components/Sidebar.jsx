@@ -1,7 +1,8 @@
 "use client";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import SidebarHeader from "./SidebarHeader";
 import PropertyList from "./PropertyList";
+import FilterPanel from "./FilterPanel";
 import { getDistance } from "@/utils/getDistance";
 import { createClient } from "@/utils/supabase/client";
 import { filterComparators, isActiveFilter } from "@/utils/filterUtils";
@@ -15,6 +16,9 @@ export default function Sidebar({
   setHighlightedIds,
 }) {
   const [departmentBuildings, setDepartmentBuildings] = useState([]);
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [filterVisible, setFilterVisible] = useState(false);
+  const headerRef = useRef(null);
   const supabase = createClient();
 
   useEffect(() => {
@@ -37,6 +41,8 @@ export default function Sidebar({
     const activeFilters = Object.entries(filterValues).filter(([key, value]) =>
       isActiveFilter(key, value)
     );
+
+    if (activeFilters.length === 0) return new Set();
 
     return new Set(
       properties
@@ -79,12 +85,42 @@ export default function Sidebar({
     return [...recommended, ...others];
   }, [properties, highlightedIds, filterValues]);
 
+  const handleFilterButton = () => {
+    if (!filterOpen) {
+      setFilterOpen(true);
+      setTimeout(() => setFilterVisible(true), 10);
+    } else {
+      setFilterVisible(false);
+      setTimeout(() => setFilterOpen(false), 200);
+    }
+  };
+
+  const handleResetFilter = () => setFilterValues(null);
+
   return (
     <aside className="flex flex-col h-full relative">
       <SidebarHeader
         filterValues={filterValues}
         setFilterValues={setFilterValues}
+        onFilterButton={handleFilterButton}
+        onResetFilter={handleResetFilter}
+        headerRef={headerRef}
+        filterOpen={filterOpen}
       />
+      {filterOpen && (
+        <FilterPanel
+          visible={filterVisible}
+          onClose={() => {
+            setFilterVisible(false);
+            setTimeout(() => setFilterOpen(false), 200);
+          }}
+          onApply={(values) => {
+            setFilterValues(values);
+            setFilterVisible(false);
+            setTimeout(() => setFilterOpen(false), 200);
+          }}
+        />
+      )}
       <PropertyList
         properties={sortedProperties}
         highlightedIds={highlightedIds}

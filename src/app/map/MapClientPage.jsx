@@ -21,7 +21,7 @@ export default function MapClientPage({ center, properties }) {
 
   return (
     <div className="flex h-[calc(100vh-64px)] mt-16">
-      <aside className="w-1/4 h-full bg-white shadow-lg z-10">
+      <aside className="w-md h-full bg-white shadow-lg z-10">
         {selectedProperty ? (
           <PropertyDetail
             property={selectedProperty}

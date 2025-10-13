@@ -1,5 +1,5 @@
 export const NAV_LINKS = [
-  { href: "/map", key: "map", label: "매물 지도" },
+  { href: "/map", key: "map", label: "지도" },
   {
     href: "/properties/new",
     key: "properties/new",

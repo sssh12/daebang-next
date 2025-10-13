@@ -6,6 +6,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
+import { Eye, EyeOff, ChevronDown } from "lucide-react";
+import Link from "next/link";
 
 const schema = z
   .object({
@@ -25,6 +27,8 @@ export default function SignupPage() {
   const [serverErrors, setServerErrors] = useState({});
   const supabase = createClient();
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
 
   const {
     register,
@@ -82,17 +86,21 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50">
-      <div className="w-full max-w-md p-8 bg-white rounded shadow">
-        <h1 className="text-2xl font-bold mb-6 text-center">회원가입</h1>
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 py-10 px-4">
+      <div className="w-full max-w-xl p-8 bg-white rounded shadow ">
+        <h1 className="text-2xl font-bold mb-6 space-y-4">회원가입</h1>
+        <p className="text-gray-600 mb-10  border-b border-accent pb-4 text-sm">
+          서비스 이용을 위해 아래 정보를 입력해주세요.
+        </p>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <label className="block mb-1 font-medium">이메일</label>
+            <label className="block mb-3 font-medium">이메일</label>
             <input
               type="email"
               {...register("email")}
-              className="w-full border px-3 py-2 rounded"
+              className="w-full border border-gray-300 border- px-3 py-2 rounded"
               autoComplete="email"
+              placeholder="이메일 주소 입력"
             />
             {errors.email && (
               <p className="text-red-500 text-sm mt-1">
@@ -101,33 +109,38 @@ export default function SignupPage() {
             )}
           </div>
           <div>
-            <label className="block mb-1 font-medium">이름</label>
+            <label className="block mb-3 font-medium">이름</label>
             <input
               type="text"
               {...register("name")}
-              className="w-full border px-3 py-2 rounded"
+              className="w-full border border-gray-300 border- px-3 py-2 rounded"
+              placeholder="이름 입력"
             />
             {errors.name && (
               <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
             )}
           </div>
-
           <div>
-            <label className="block mb-1 font-medium">학교</label>
-            <select
-              {...register("school_id")}
-              className="w-full border px-3 py-2 rounded"
-              defaultValue=""
-            >
-              <option value="" disabled>
-                학교를 선택하세요
-              </option>
-              {schools.map((school) => (
-                <option key={school.id} value={school.id}>
-                  {school.name}
+            <label className="block mb-3 font-medium">학교</label>
+            <div className="relative">
+              <select
+                {...register("school_id")}
+                className="w-full border border-gray-300 px-3 py-2 rounded appearance-none pr-10"
+                defaultValue=""
+              >
+                <option value="" disabled>
+                  학교를 선택하세요
                 </option>
-              ))}
-            </select>
+                {schools.map((school) => (
+                  <option key={school.id} value={school.id}>
+                    {school.name}
+                  </option>
+                ))}
+              </select>
+              <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2">
+                <ChevronDown className="w-6 h-6 text-gray-500" />
+              </span>
+            </div>
             {errors.school_id && (
               <p className="text-red-500 text-sm mt-1">
                 {errors.school_id.message}
@@ -135,13 +148,28 @@ export default function SignupPage() {
             )}
           </div>
           <div>
-            <label className="block mb-1 font-medium">비밀번호</label>
-            <input
-              type="password"
-              {...register("password")}
-              className="w-full border px-3 py-2 rounded"
-              autoComplete="new-password"
-            />
+            <label className="block mb-3 font-medium">비밀번호</label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                {...register("password")}
+                className="w-full border border-gray-300 px-3 py-2 rounded pr-10"
+                autoComplete="new-password"
+                placeholder="비밀번호 6자리 이상 입력"
+              />
+              <button
+                type="button"
+                className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer"
+                onClick={() => setShowPassword((v) => !v)}
+                tabIndex={-1}
+              >
+                {showPassword ? (
+                  <Eye className="w-5 h-5 text-gray-500" />
+                ) : (
+                  <EyeOff className="w-5 h-5 text-gray-500" />
+                )}
+              </button>
+            </div>
             {errors.password && (
               <p className="text-red-500 text-sm mt-1">
                 {errors.password.message}
@@ -149,13 +177,28 @@ export default function SignupPage() {
             )}
           </div>
           <div>
-            <label className="block mb-1 font-medium">비밀번호 확인</label>
-            <input
-              type="password"
-              {...register("passwordConfirm")}
-              className="w-full border px-3 py-2 rounded"
-              autoComplete="new-password"
-            />
+            <label className="block mb-3 font-medium">비밀번호 확인</label>
+            <div className="relative">
+              <input
+                type={showPasswordConfirm ? "text" : "password"}
+                {...register("passwordConfirm")}
+                className="w-full border border-gray-300 px-3 py-2 rounded"
+                autoComplete="new-password"
+                placeholder="비밀번호 확인"
+              />
+              <button
+                type="button"
+                className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer"
+                onClick={() => setShowPasswordConfirm((v) => !v)}
+                tabIndex={-1}
+              >
+                {showPasswordConfirm ? (
+                  <Eye className="w-5 h-5 text-gray-500" />
+                ) : (
+                  <EyeOff className="w-5 h-5 text-gray-500" />
+                )}
+              </button>
+            </div>
             {errors.passwordConfirm && (
               <p className="text-red-500 text-sm mt-1">
                 {errors.passwordConfirm.message}
@@ -165,12 +208,18 @@ export default function SignupPage() {
 
           <button
             type="submit"
-            className="w-full bg-main text-white py-2 rounded font-semibold hover:bg-accent transition cursor-pointer"
+            className="w-full bg-main text-white py-2 rounded font-semibold hover:bg-accent transition active:scale-98 cursor-pointer"
             disabled={isSubmitting}
           >
             {isSubmitting ? "가입 중..." : "회원가입"}
           </button>
         </form>
+        <div className="mt-4 text-center">
+          <span className="text-gray-600">이미 계정이 있으신가요? </span>
+          <Link href="/login" className="text-blue-700 hover:underline">
+            로그인
+          </Link>
+        </div>
       </div>
     </div>
   );
