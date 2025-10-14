@@ -2,6 +2,7 @@
 
 import { NAV_LINKS } from "@/constants";
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
@@ -79,11 +80,14 @@ export default function Header() {
 
   return (
     <header className="fixed top-0 left-0 w-full h-16 flex items-center justify-between px-8 bg-white drop-shadow-xl z-20">
-      <Link
-        href={isLoggedIn ? "/map" : "/"}
-        className="text-2xl font-extrabold text-main hover:text-accent transition-colors"
-      >
-        대방
+      <Link href={isLoggedIn ? "/map" : "/"}>
+        <Image
+          src="/logo.png"
+          alt="Logo"
+          width={120}
+          height={40}
+          className="object-contain h-12 w-auto"
+        />
       </Link>
       <nav className="absolute left-0 right-0 flex justify-center items-center pointer-events-none">
         <ul className="hidden md:flex items-center space-x-12 pointer-events-auto">
