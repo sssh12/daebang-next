@@ -38,6 +38,10 @@ export default function Sidebar({
   const highlightedIds = useMemo(() => {
     if (!filterValues) return new Set();
 
+    if (filterValues.department && departmentBuildings.length === 0) {
+      return new Set();
+    }
+
     const activeFilters = Object.entries(filterValues).filter(([key, value]) =>
       isActiveFilter(key, value)
     );

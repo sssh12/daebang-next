@@ -1,6 +1,6 @@
 "use client";
 
-import { RotateCcw } from "lucide-react";
+import { RotateCcw, ListFilterPlus, X } from "lucide-react";
 
 export default function SidebarHeader({
   filterValues,
@@ -22,7 +22,14 @@ export default function SidebarHeader({
         className="w-1/4 h-full bg-main hover:bg-accent text-white px-2 py-1 rounded font-semibold transition cursor-pointer active:scale-98"
         onClick={onFilterButton}
       >
-        {filterOpen ? "닫기" : "필터"}
+        <div className="flex justify-between items-center">
+          <span className="mx-1">{filterOpen ? "닫기" : "필터"}</span>
+          {filterOpen ? (
+            <X className="w-4 h-4 mr-1" />
+          ) : (
+            <ListFilterPlus className="w-4 h-4 mr-1" />
+          )}
+        </div>
       </button>
       {filterValues && (
         <button

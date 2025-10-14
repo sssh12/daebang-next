@@ -85,8 +85,8 @@ export default function Header() {
       >
         대방
       </Link>
-      <nav>
-        <ul className="hidden md:flex items-center space-x-12">
+      <nav className="absolute left-0 right-0 flex justify-center items-center pointer-events-none">
+        <ul className="hidden md:flex items-center space-x-12 pointer-events-auto">
           {NAV_LINKS.map((link) => (
             <li key={link.key}>
               <Link
