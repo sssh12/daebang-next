@@ -1,12 +1,11 @@
 export const NAV_LINKS = [
   { href: "/map", key: "map", label: "지도" },
+  { href: "/favorite", key: "favorite", label: "관심 목록" },
   {
     href: "/properties/new",
     key: "properties/new",
-    label: "매물 등록(테스트용)",
+    label: "방 내놓기(테스트용)",
   },
-  { href: "/community", key: "community", label: "커뮤니티" },
-  { href: "/mypage", key: "mypage", label: "마이페이지" },
 ];
 
 export const FOOTER_LINKS = [

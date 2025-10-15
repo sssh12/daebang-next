@@ -4,7 +4,9 @@ import { getPixelClusters } from "@/utils/getPixelClusters";
 import {
   createMarkerOverlay,
   createClusterOverlay,
+  createSchoolOveray,
 } from "@/utils/createOverlay";
+import { map } from "zod";
 
 export default function Map({
   center,
@@ -15,10 +17,12 @@ export default function Map({
   onMapChange,
   onVisiblePropertiesChange,
   highlightedIds = new Set(),
+  schoolBuilding,
 }) {
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
   const overlaysRef = useRef([]);
+  const schoolOverlayRef = useRef(null);
   const [hoveredId, setHoveredId] = useState(null);
   const [activeId, setActiveId] = useState(null);
 
@@ -156,6 +160,38 @@ export default function Map({
     hoveredId,
     activeId,
   ]);
+
+  useEffect(() => {
+    if (!mapInstance.current || !window.kakao?.maps) return;
+
+    if (schoolOverlayRef.current) {
+      schoolOverlayRef.current.setMap(null);
+      schoolOverlayRef.current = null;
+    }
+
+    if (
+      schoolBuilding &&
+      schoolBuilding.building_lat &&
+      schoolBuilding.building_lng
+    ) {
+      const div = createSchoolOveray();
+      const position = new window.kakao.maps.LatLng(
+        Number(schoolBuilding.building_lat),
+        Number(schoolBuilding.building_lng)
+      );
+
+      const overlay = new window.kakao.maps.CustomOverlay({
+        position,
+        content: div,
+        yAnchor: 1,
+      });
+
+      overlay.setMap(mapInstance.current);
+      schoolOverlayRef.current = overlay;
+
+      mapInstance.current.setCenter(position);
+    }
+  }, [schoolBuilding]);
 
   useEffect(() => {
     if (

@@ -1,6 +1,7 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import MarkerIcon from "@/components/MarkerIcon";
 import ClusterIcon from "@/components/ClusterIcon";
+import SchoolMarker from "@/components/SchoolMarkerIcon";
 
 export function createMarkerOverlay({
   isHighlighted,
@@ -37,6 +38,19 @@ export function createMarkerOverlay({
     div.style.transform = "scale(1.12)";
   };
   div.onclick = onClick;
+  return div;
+}
+
+export function createSchoolOveray() {
+  const div = document.createElement("div");
+  div.innerHTML = renderToStaticMarkup(<SchoolMarker />);
+  div.style.cssText = `
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  `;
   return div;
 }
 

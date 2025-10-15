@@ -14,6 +14,7 @@ export default function Sidebar({
   filterValues,
   setFilterValues,
   setHighlightedIds,
+  onSchoolSelect,
 }) {
   const [departmentBuildings, setDepartmentBuildings] = useState([]);
   const [filterOpen, setFilterOpen] = useState(false);
@@ -28,12 +29,20 @@ export default function Sidebar({
           .from("department")
           .select("id, name, building_lat, building_lng")
           .eq("id", Number(filterValues.department));
-        if (!error && data && data.length > 0) setDepartmentBuildings(data);
-        else setDepartmentBuildings([]);
-      } else setDepartmentBuildings([]);
+        if (!error && data && data.length > 0) {
+          setDepartmentBuildings(data);
+          if (onSchoolSelect) onSchoolSelect(data[0]);
+        } else {
+          setDepartmentBuildings([]);
+          if (onSchoolSelect) onSchoolSelect(null);
+        }
+      } else {
+        setDepartmentBuildings([]);
+        if (onSchoolSelect) onSchoolSelect(null);
+      }
     }
     fetchBuildings();
-  }, [filterValues?.department]);
+  }, [filterValues?.department, onSchoolSelect]);
 
   const highlightedIds = useMemo(() => {
     if (!filterValues) return new Set();

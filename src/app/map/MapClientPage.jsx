@@ -13,6 +13,7 @@ export default function MapClientPage({ center, properties }) {
   const [visibleIds, setVisibleIds] = useState([]);
   const [filterValues, setFilterValues] = useState(null);
   const [highlightedIds, setHighlightedIds] = useState(new Set());
+  const [selectedSchool, setSelectedSchool] = useState(null);
 
   const visibleProperties = useMemo(
     () => properties.filter((p) => visibleIds.includes(p.id)),
@@ -36,6 +37,7 @@ export default function MapClientPage({ center, properties }) {
             setFilterValues={setFilterValues}
             highlightedIds={highlightedIds}
             setHighlightedIds={setHighlightedIds}
+            onSchoolSelect={setSelectedSchool}
           />
         )}
       </aside>
@@ -52,6 +54,7 @@ export default function MapClientPage({ center, properties }) {
           }}
           onVisiblePropertiesChange={setVisibleIds}
           highlightedIds={highlightedIds}
+          schoolBuilding={selectedSchool}
         />
       </div>
     </div>
