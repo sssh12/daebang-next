@@ -30,7 +30,6 @@ export default function Header() {
 
           if (userData?.school_id) {
             const { data: schoolData } = await supabase
-
               .from("school")
               .select("name")
               .eq("id", userData.school_id)

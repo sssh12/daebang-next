@@ -20,10 +20,6 @@
 
 - supabase-js
 
-## 인증
-
-- NextAuth.js (Auth.js)
-
 ## 파일 스토리지
 
 - Supabase Storage
