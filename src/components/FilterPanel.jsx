@@ -73,7 +73,7 @@ export default function FilterPanel({ visible, onApply, onClose }) {
             <label className="block font-semibold mb-1">{f.label}</label>
             {f.type === "select" && (
               <select
-                className="w-full border rounded px-2 py-1"
+                className="w-full border rounded px-2 py-1 cursor-pointer"
                 value={filterState[f.key]}
                 onChange={(e) => handleChange(f.key, e.target.value)}
               >
@@ -96,7 +96,7 @@ export default function FilterPanel({ visible, onApply, onClose }) {
                 {f.options.map((opt) => (
                   <button
                     key={opt}
-                    className={`px-3 py-1 rounded border ${
+                    className={`cursor-pointer px-3 py-1 rounded border ${
                       filterState[f.key] === opt
                         ? "bg-main text-white"
                         : "bg-white text-main"
@@ -134,11 +134,15 @@ export default function FilterPanel({ visible, onApply, onClose }) {
             {f.type === "checkbox" && (
               <div className="flex gap-2 flex-wrap">
                 {f.options.map((opt) => (
-                  <label key={opt} className="flex items-center gap-1">
+                  <label
+                    key={opt}
+                    className="flex items-center gap-1 cursor-pointer"
+                  >
                     <input
                       type="checkbox"
                       checked={filterState[f.key]?.includes(opt)}
                       onChange={() => handleMultiSelect(f.key, opt)}
+                      className="cursor-pointer"
                     />
                     {opt}
                   </label>
