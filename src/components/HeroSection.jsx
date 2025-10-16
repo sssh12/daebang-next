@@ -13,7 +13,7 @@ export default function HeroSection() {
         </p>
         <div className="mt-8">
           <Link href="/signup">
-            <button className="cursor-pointer bg-main text-white px-6 py-3 sm:px-8 sm:py-3 rounded-full  sm:text-lg font-semibold hover:bg-accent transition hover:scale-120 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-95">
+            <button className="cursor-pointer bg-accent text-white px-6 py-3 sm:px-8 sm:py-3 rounded-full  sm:text-lg font-semibold hover:bg-main transition hover:scale-120 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-95">
               회원가입하고 시작하기
             </button>
           </Link>

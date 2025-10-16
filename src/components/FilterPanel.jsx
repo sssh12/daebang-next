@@ -58,7 +58,7 @@ export default function FilterPanel({ visible, onApply, onClose }) {
   return (
     <div
       className={`
-        absolute top-[81px] w-full h-[calc(100%-81px)] bg-white shadow-lg z-10
+        absolute top-[84px] w-full h-[calc(100%-84px)] bg-white shadow-lg z-10
         transition-all duration-200 ease-in-out flex flex-col min-w-[280px]
         ${
           visible
@@ -173,7 +173,7 @@ export default function FilterPanel({ visible, onApply, onClose }) {
           className={`flex-1 py-2 rounded font-semibold transition
             ${
               hasActiveFilter
-                ? "bg-main text-white cursor-pointer hover:bg-accent active:scale-98"
+                ? "bg-accent text-white cursor-pointer hover:bg-main active:scale-98"
                 : "bg-gray-200 text-gray-400 cursor-not-allowed opacity-60"
             }`}
           onClick={handleApply}

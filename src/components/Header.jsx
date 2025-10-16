@@ -15,41 +15,22 @@ export default function Header() {
   const router = useRouter();
 
   useEffect(() => {
-    let userId = null;
-
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      setIsLoggedIn(!!session);
-      if (session?.user) {
-        const { data: userData } = await supabase
-          .from("user")
-          .select("name, school_id")
-          .eq("id", userId)
-          .single();
-        setUserName(userData?.name || "");
-        if (userData?.school_id) {
-          const { data: schoolData } = await supabase
-            .from("school")
-            .select("name")
-            .eq("id", userData.school_id)
-            .single();
-          setSchoolName(schoolData?.name || "");
-        }
-      }
-    });
-
     const { data: listener } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
         setIsLoggedIn(!!session);
+
         if (session?.user) {
-          userId = session.user.id;
+          const userId = session.user.id;
           const { data: userData } = await supabase
             .from("user")
             .select("name, school_id")
             .eq("id", userId)
             .single();
           setUserName(userData?.name || "");
+
           if (userData?.school_id) {
             const { data: schoolData } = await supabase
+
               .from("school")
               .select("name")
               .eq("id", userData.school_id)
@@ -64,7 +45,6 @@ export default function Header() {
         }
       }
     );
-
     return () => {
       listener?.subscription.unsubscribe();
     };
@@ -77,10 +57,10 @@ export default function Header() {
   };
 
   return (
-    <header className="fixed top-0 left-0 w-full h-17 flex items-center justify-between px-8 bg-white drop-shadow-lg z-20">
+    <header className="fixed top-0 left-0 w-full h-20 flex items-center justify-between px-8 bg-white drop-shadow-lg z-20">
       <Link href={isLoggedIn ? "/map" : "/"}>
         <Image
-          src="/logo2.png"
+          src="/logo.png"
           alt="Logo"
           width={120}
           height={40}
@@ -94,7 +74,7 @@ export default function Header() {
               <li key={link.key}>
                 <Link
                   href={link.href}
-                  className="p-2.5 cursor-pointer rounded hover:bg-gray-200 transition"
+                  className="p-3 cursor-pointer rounded hover:bg-gray-100 transition"
                 >
                   {link.label}
                 </Link>
@@ -104,7 +84,7 @@ export default function Header() {
         </nav>
         {isLoggedIn ? (
           <div className="flex items-center gap-4">
-            <div className="hidden md:flex flex-col items-end mr-2">
+            <div className="hidden md:flex flex-col items-end mr-2 hover:bg-gray-100 p-2 rounded transition cursor-pointer">
               <span className="font-semibold">{userName}님</span>
               {schoolName && (
                 <span className="text-main text-sm">{schoolName}</span>
@@ -112,14 +92,14 @@ export default function Header() {
             </div>
             <button
               onClick={handleLogout}
-              className="cursor-pointer hidden md:block bg-main text-white px-5 py-2 rounded-full hover:bg-accent active:scale-98 transition "
+              className="cursor-pointer hidden font-semibold md:block bg-accent text-white px-5 py-2 rounded-full hover:bg-main active:scale-98 transition "
             >
               로그아웃
             </button>
           </div>
         ) : (
           <Link href="/login">
-            <button className="cursor-pointer hidden md:block bg-main text-white px-5 py-2 rounded-full hover:bg-accent active:scale-98 transition ">
+            <button className="cursor-pointer hidden font-semibold md:block bg-accent text-white px-5 py-2 rounded-full hover:bg-main active:scale-98 transition ">
               로그인
             </button>
           </Link>

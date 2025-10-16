@@ -12,7 +12,7 @@ export default function PropertyDetail({ property, onClose }) {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="bg-white flex items-center text-xl m-3 font-bold relative">
+      <div className="bg-white flex items-center text-xl m-3 mt-7 font-bold relative">
         <Undo2
           className="w-12 h-12 cursor-pointer rounded p-3 hover:bg-gray-200 transition"
           onClick={onClose}
@@ -125,7 +125,7 @@ export default function PropertyDetail({ property, onClose }) {
         </div>
       </div>
       <div className="p-4 border-t flex gap-2">
-        <button className="flex-1 bg-main hover:bg-accent text-white py-2 rounded active:scale-98 transition cursor-pointer">
+        <button className="flex-1 font-semibold bg-accent hover:bg-main text-white py-2 rounded active:scale-98 transition cursor-pointer">
           문의하기
         </button>
       </div>

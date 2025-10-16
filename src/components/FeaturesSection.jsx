@@ -11,7 +11,7 @@ export default function FeaturesSection() {
     <section className="py-16 md:py-20 px-4 sm:px-8 bg-[#F8FFF8]">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12 transition">
-          <h2 className="text-3xl sm:text-4xl font-bold text-text">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-text">
             이런 경험 있으신가요?
           </h2>
           <p className="mt-4 text-text sm:text-lg">
@@ -32,7 +32,7 @@ export default function FeaturesSection() {
       </div>
       <div className="max-w-7xl mx-auto mb-12">
         <div className="text-center mt-62 mb-12">
-          <h2 className="text-3xl sm:text-4xl font-bold text-text">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-text">
             대방이 해결해 드립니다!
           </h2>
           <p className="mt-4 text-text sm:text-lg">

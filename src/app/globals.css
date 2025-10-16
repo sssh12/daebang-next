@@ -1,8 +1,8 @@
-@import url("https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Dancing+Script:wght@400..700&family=Do+Hyeon&family=Jua&family=Orbit&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Chiron+GoRound+TC:wght@200..900&family=Dancing+Script:wght@400..700&family=Do+Hyeon&family=Jua&family=Nanum+Gothic&family=Orbit&display=swap");
 @import "tailwindcss";
 
 body {
-  font-family: "Orbit", sans-serif;
+  font-family: "Nanum Gothic", sans-serif;
   font-weight: 400;
   font-style: normal;
 }

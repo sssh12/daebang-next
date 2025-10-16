@@ -1,14 +1,21 @@
 "use client";
+
+import { Star } from "lucide-react";
+
 export default function PropertyListItem({
   property,
   highlighted,
-  selected,
+
   onClick,
 }) {
   return (
     <li
-      className={`flex px-2 py-2 rounded-lg overflow-hidden shadow-sm hover:shadow-lg cursor-pointer transition
-        ${highlighted ? " bg-emerald-100" : ""}
+      className={`flex m-2 p-4 rounded-md overflow-hidden shadow-sm hover:shadow-lg cursor-pointer transition
+        ${
+          highlighted
+            ? "border-3 border-accent bg-gray-50"
+            : "border-3 border-gray-100 bg-gray-50"
+        }
       `}
       onClick={onClick}
     >
@@ -27,8 +34,9 @@ export default function PropertyListItem({
       </div>
       <div className="flex-1 p-3">
         {highlighted && (
-          <div className="text-xs text-white bg-main px-2 py-0.5 rounded-full inline-block mb-1">
-            추천
+          <div className="text-white text-sm bg-accent p-2 rounded mb-1 flex justify-between items-center w-15 h-6">
+            <Star className="w-4 h-4" />
+            <span>추천</span>
           </div>
         )}
         <div className="font-bold text-lg">{property.title}</div>
