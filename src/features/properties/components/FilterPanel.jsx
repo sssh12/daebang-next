@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createClient } from "@/utils/supabase/client";
-import { isActiveFilter } from "@/utils/filterUtils";
+import { createClient } from "@/lib/supabase/client";
+import { isActiveFilter } from "../utils/filterUtils";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import { FILTER_CONFIG } from "@/constants/filterConfig";

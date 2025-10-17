@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "@/lib/supabase/client";
 
 export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -91,14 +91,14 @@ export default function Header() {
             </div>
             <button
               onClick={handleLogout}
-              className="cursor-pointer hidden font-semibold md:block bg-accent text-white px-5 py-2 rounded-full hover:bg-main active:scale-98 transition "
+              className="cursor-pointer hidden font-semibold md:block bg-accent text-white px-5 py-2 rounded hover:bg-main active:scale-98 transition "
             >
               로그아웃
             </button>
           </div>
         ) : (
           <Link href="/login">
-            <button className="cursor-pointer hidden font-semibold md:block bg-accent text-white px-5 py-2 rounded-full hover:bg-main active:scale-98 transition ">
+            <button className="cursor-pointer hidden font-semibold md:block bg-accent text-white px-5 py-2 rounded hover:bg-main active:scale-98 transition ">
               로그인
             </button>
           </Link>

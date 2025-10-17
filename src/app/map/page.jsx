@@ -1,5 +1,5 @@
-import { createClient } from "@/utils/supabase/server";
-import MapClientPage from "./MapClientPage";
+import { createClient } from "@/lib/supabase/server";
+import MapClientPage from "@/features/map/components/MapClientPage";
 
 const DEFAULT_CENTER = { lat: 36.337093681740996, lng: 127.4450861750031 };
 

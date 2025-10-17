@@ -1,11 +1,11 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { getPixelClusters } from "@/utils/getPixelClusters";
+import { getPixelClusters } from "@/features/map/utils/getPixelClusters";
 import {
   createMarkerOverlay,
   createClusterOverlay,
   createSchoolOverlay,
-} from "@/utils/createOverlay";
+} from "@/features/map/utils/createOverlay";
 
 export default function Map({
   center,

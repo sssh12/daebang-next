@@ -12,7 +12,7 @@ import {
   ROOM_OPTIONS,
   CONTRACT_PERIODS,
 } from "@/constants/propertyOptions";
-import { usePropertyForm } from "@/utils/usePropertyForm";
+import { usePropertyForm } from "@/features/properties/hooks/usePropertyForm";
 
 export default function PropertyAddPage() {
   const {

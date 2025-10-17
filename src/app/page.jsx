@@ -1,6 +1,6 @@
-import HeroSection from "@/components/HeroSection";
-import FeaturesSection from "@/components/FeaturesSection";
-import { createClient } from "@/utils/supabase/server";
+import HeroSection from "@/components/layout/HeroSection";
+import FeaturesSection from "@/components/layout/FeaturesSection";
+import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
 export default async function Home() {

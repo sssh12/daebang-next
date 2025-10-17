@@ -1,10 +1,12 @@
 "use client";
 import { useState, useCallback } from "react";
-import Sidebar from "@/components/Sidebar";
-import PropertyDetail from "@/components/PropertyDetail";
+import Sidebar from "@/features/properties/components/Sidebar";
+import PropertyDetail from "@/features/properties/components/PropertyDetail";
 import dynamic from "next/dynamic";
 
-const Map = dynamic(() => import("@/components/Map"), { ssr: false });
+const Map = dynamic(() => import("@/features/map/components/Map"), {
+  ssr: false,
+});
 
 export default function MapClientPage({ center }) {
   const [properties, setProperties] = useState([]);

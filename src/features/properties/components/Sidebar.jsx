@@ -1,11 +1,12 @@
 "use client";
+
 import { useState, useMemo, useEffect, useRef } from "react";
 import SidebarHeader from "./SidebarHeader";
 import PropertyList from "./PropertyList";
 import FilterPanel from "./FilterPanel";
-import { getDistance } from "@/utils/getDistance";
-import { createClient } from "@/utils/supabase/client";
-import { filterComparators, isActiveFilter } from "@/utils/filterUtils";
+import { getDistance } from "../utils/getDistance";
+import { createClient } from "@/lib/supabase/client";
+import { filterComparators, isActiveFilter } from "../utils/filterUtils";
 
 export default function Sidebar({
   properties,

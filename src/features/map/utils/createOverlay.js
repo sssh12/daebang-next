@@ -1,7 +1,7 @@
 import { renderToStaticMarkup } from "react-dom/server";
-import MarkerIcon from "@/components/MarkerIcon";
-import ClusterIcon from "@/components/ClusterIcon";
-import SchoolMarker from "@/components/SchoolMarkerIcon";
+import MarkerIcon from "@/components/ui/MarkerIcon";
+import ClusterIcon from "@/components/ui/ClusterIcon";
+import SchoolMarker from "@/components/ui/SchoolMarkerIcon";
 
 export function createMarkerOverlay({
   isHighlighted,
