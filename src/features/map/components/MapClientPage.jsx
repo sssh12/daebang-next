@@ -61,10 +61,10 @@ export default function MapClientPage({ center }) {
           <button
             onClick={handleZoomIn}
             disabled={isZoomInDisabled}
-            className={`w-10 h-10 bg-white rounded-md shadow-lg flex items-center justify-center transition active:scale-95 ${
+            className={`w-10 h-10 bg-white rounded-md shadow-lg flex items-center justify-center transition border-2 border-gray-300 ${
               isZoomInDisabled
                 ? "text-gray-300 cursor-not-allowed"
-                : "hover:bg-gray-100 cursor-pointer"
+                : "hover:bg-gray-100 cursor-pointer active:scale-95"
             }`}
             aria-label="지도 확대"
           >
@@ -73,10 +73,10 @@ export default function MapClientPage({ center }) {
           <button
             onClick={handleZoomOut}
             disabled={isZoomOutDisabled}
-            className={`w-10 h-10 bg-white rounded-md shadow-lg flex items-center justify-center transition active:scale-95 ${
+            className={`w-10 h-10 bg-white rounded-md shadow-lg flex items-center justify-center transition   border-2 border-gray-300 ${
               isZoomOutDisabled
                 ? "text-gray-300 cursor-not-allowed"
-                : "hover:bg-gray-100 cursor-pointer"
+                : "hover:bg-gray-100 cursor-pointer active:scale-95"
             }`}
             aria-label="지도 축소"
           >

@@ -7,6 +7,7 @@
 - React Hook Form
 - Zod
 - Lucide-react
+- Zustand
 
 ## 백엔드
 
