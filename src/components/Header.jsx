@@ -56,7 +56,7 @@ export default function Header() {
   };
 
   return (
-    <header className="fixed top-0 left-0 w-full h-20 flex items-center justify-between px-8 bg-white drop-shadow-lg z-20">
+    <header className="fixed top-0 left-0 w-full h-20 flex items-center justify-between px-8 bg-white drop-shadow-sm z-10 border-b border-gray-300">
       <Link href={isLoggedIn ? "/map" : "/"}>
         <Image
           src="/logo.png"

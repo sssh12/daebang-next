@@ -58,7 +58,7 @@ export default function FilterPanel({ visible, onApply, onClose }) {
   return (
     <div
       className={`
-        absolute top-[84px] w-full h-[calc(100%-84px)] bg-white shadow-lg z-10
+        absolute top-16 w-full h-[calc(100%-64px)] bg-white shadow-lg z-10
         transition-all duration-200 ease-in-out flex flex-col min-w-[280px]
         ${
           visible

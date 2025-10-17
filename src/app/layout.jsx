@@ -7,7 +7,7 @@ export default function RootLayout({ children }) {
     <html lang="ko">
       <body>
         <Header />
-        <main className="mt-16">{children}</main>
+        <main className="mt-20">{children}</main>
         <Footer />
       </body>
     </html>

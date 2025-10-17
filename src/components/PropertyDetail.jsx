@@ -12,7 +12,7 @@ export default function PropertyDetail({ property, onClose }) {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="bg-white flex items-center text-xl m-3 mt-7 font-bold relative">
+      <div className="bg-white flex items-center text-xl m-3 font-bold relative">
         <Undo2
           className="w-12 h-12 cursor-pointer rounded p-3 hover:bg-gray-200 transition"
           onClick={onClose}

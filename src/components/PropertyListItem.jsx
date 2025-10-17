@@ -10,7 +10,7 @@ export default function PropertyListItem({
 }) {
   return (
     <li
-      className={`flex m-2 p-4 rounded-md overflow-hidden shadow-sm hover:shadow-lg cursor-pointer transition
+      className={`flex p-2 mb-2 mx-1 rounded-md overflow-hidden shadow-sm hover:shadow-lg cursor-pointer transition
         ${
           highlighted
             ? "border-3 border-accent bg-gray-50"

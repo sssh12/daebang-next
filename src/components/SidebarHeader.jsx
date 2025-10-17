@@ -12,7 +12,7 @@ export default function SidebarHeader({
   return (
     <div
       ref={headerRef}
-      className="mt-6 p-4 flex justify-between items-center space-x-2 flex-shrink-0"
+      className="p-4 m-1 flex justify-between items-center space-x-2 flex-shrink-0"
     >
       <input
         className="w-full border border-gray-400 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
