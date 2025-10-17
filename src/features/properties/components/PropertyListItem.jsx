@@ -11,7 +11,7 @@ export default function PropertyListItem({
 }) {
   return (
     <li
-      className={`flex p-2 mb-2 mx-1 rounded-md overflow-hidden shadow-sm hover:shadow-lg cursor-pointer transition
+      className={`flex p-2 mb-2 mx-1 rounded overflow-hidden shadow-sm hover:shadow-lg cursor-pointer transition
         ${
           highlighted
             ? "border-2 border-accent bg-gray-50"
@@ -20,14 +20,14 @@ export default function PropertyListItem({
       `}
       onClick={onClick}
     >
-      <div className="relative w-32 h-24 bg-gray-100 rounded-xl flex-shrink-0">
+      <div className="relative w-32 h-24 bg-gray-100 flex-shrink-0">
         {property.images?.[0] ? (
           <Image
             src={property.images[0]}
             alt={property.title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover rounded-xl"
+            className="object-cover rounded"
             priority
           />
         ) : (

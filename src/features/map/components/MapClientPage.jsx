@@ -1,46 +1,47 @@
 "use client";
-import { useState, useCallback } from "react";
+import { useEffect } from "react";
 import Sidebar from "@/features/properties/components/Sidebar";
 import PropertyDetail from "@/features/properties/components/PropertyDetail";
 import dynamic from "next/dynamic";
+import { useMapStore } from "@/store/mapStore";
+import { Plus, Minus } from "lucide-react";
 
 const Map = dynamic(() => import("@/features/map/components/Map"), {
   ssr: false,
 });
 
 export default function MapClientPage({ center }) {
-  const [properties, setProperties] = useState([]);
-  const [selectedProperty, setSelectedProperty] = useState(null);
-  const [mapCenter, setMapCenter] = useState(center);
-  const [mapZoom, setMapZoom] = useState(3);
-  const [filterValues, setFilterValues] = useState(null);
-  const [highlightedIds, setHighlightedIds] = useState(new Set());
-  const [selectedSchool, setSelectedSchool] = useState(null);
+  const {
+    selectedProperty,
+    setSelectedProperty,
+    mapBounds,
+    fetchProperties,
+    mapInstance,
+    currentZoom,
+    minZoom,
+    maxZoom,
+  } = useMapStore();
 
-  const fetchProperties = useCallback(async (bounds) => {
-    if (!bounds) return;
-
-    const sw = bounds.getSouthWest();
-    const ne = bounds.getNorthEast();
-
-    const query = new URLSearchParams({
-      sw_lat: sw.getLat(),
-      sw_lng: sw.getLng(),
-      ne_lat: ne.getLat(),
-      ne_lng: ne.getLng(),
-    }).toString();
-
-    try {
-      const response = await fetch(`/api/properties?${query}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch properties");
-      }
-      const data = await response.json();
-      setProperties(data);
-    } catch (error) {
-      console.error(error);
+  useEffect(() => {
+    if (mapBounds) {
+      fetchProperties(mapBounds);
     }
-  }, []);
+  }, [mapBounds, fetchProperties]);
+
+  const handleZoomIn = () => {
+    if (mapInstance) {
+      mapInstance.setLevel(mapInstance.getLevel() - 1);
+    }
+  };
+
+  const handleZoomOut = () => {
+    if (mapInstance) {
+      mapInstance.setLevel(mapInstance.getLevel() + 1);
+    }
+  };
+
+  const isZoomInDisabled = currentZoom <= minZoom;
+  const isZoomOutDisabled = currentZoom >= maxZoom;
 
   return (
     <div className="flex h-[calc(100vh-80px)]">
@@ -51,35 +52,37 @@ export default function MapClientPage({ center }) {
             onClose={() => setSelectedProperty(null)}
           />
         ) : (
-          <Sidebar
-            properties={properties}
-            onSelect={setSelectedProperty}
-            selectedProperty={selectedProperty}
-            filterValues={filterValues}
-            setFilterValues={setFilterValues}
-            highlightedIds={highlightedIds}
-            setHighlightedIds={setHighlightedIds}
-            onSchoolSelect={setSelectedSchool}
-          />
+          <Sidebar />
         )}
       </aside>
       <div className="flex-1 h-full relative z-20">
-        <Map
-          center={mapCenter}
-          zoom={mapZoom}
-          properties={properties}
-          selectedProperty={selectedProperty}
-          onMarkerClick={setSelectedProperty}
-          onMapChange={({ center, zoom, bounds }) => {
-            setMapCenter(center);
-            setMapZoom(zoom);
-            if (bounds) {
-              fetchProperties(bounds);
-            }
-          }}
-          highlightedIds={highlightedIds}
-          schoolBuilding={selectedSchool}
-        />
+        <Map center={center} zoom={3} />
+        <div className="absolute top-4 right-4 z-20 flex flex-col gap-2">
+          <button
+            onClick={handleZoomIn}
+            disabled={isZoomInDisabled}
+            className={`w-10 h-10 bg-white rounded-md shadow-lg flex items-center justify-center transition active:scale-95 ${
+              isZoomInDisabled
+                ? "text-gray-300 cursor-not-allowed"
+                : "hover:bg-gray-100 cursor-pointer"
+            }`}
+            aria-label="지도 확대"
+          >
+            <Plus className="w-6 h-6" />
+          </button>
+          <button
+            onClick={handleZoomOut}
+            disabled={isZoomOutDisabled}
+            className={`w-10 h-10 bg-white rounded-md shadow-lg flex items-center justify-center transition active:scale-95 ${
+              isZoomOutDisabled
+                ? "text-gray-300 cursor-not-allowed"
+                : "hover:bg-gray-100 cursor-pointer"
+            }`}
+            aria-label="지도 축소"
+          >
+            <Minus className="w-6 h-6" />
+          </button>
+        </div>
       </div>
     </div>
   );

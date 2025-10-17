@@ -1,88 +1,38 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { getPixelClusters } from "@/features/map/utils/getPixelClusters";
 import {
   createMarkerOverlay,
   createClusterOverlay,
   createSchoolOverlay,
 } from "@/features/map/utils/createOverlay";
+import { useMapStore } from "@/store/mapStore";
 
-export default function Map({
-  center,
-  zoom,
-  properties,
-  selectedProperty,
-  onMarkerClick,
-  onMapChange,
-  highlightedIds = new Set(),
-  schoolBuilding,
-}) {
+const SCHOOL_MARKER_MAX_LEVEL = 4;
+
+export default function Map({ center, zoom }) {
   const mapRef = useRef(null);
-  const mapInstance = useRef(null);
   const overlaysRef = useRef([]);
   const schoolOverlayRef = useRef(null);
+
+  const mapInstance = useRef(null);
+
+  const {
+    properties,
+    selectedProperty,
+    highlightedIds,
+    selectedSchool,
+    setSelectedProperty,
+    setMapBounds,
+    setMapInstance,
+    setCurrentZoom,
+    setZoomLimits,
+  } = useMapStore();
+
   const [hoveredId, setHoveredId] = useState(null);
   const [activeId, setActiveId] = useState(null);
 
-  useEffect(() => {
-    const script = document.createElement("script");
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_API_KEY}&autoload=false&libraries=clusterer`;
-    script.async = true;
-    document.head.appendChild(script);
-
-    script.onload = () => {
-      window.kakao.maps.load(() => {
-        const map = new window.kakao.maps.Map(mapRef.current, {
-          center: new window.kakao.maps.LatLng(center.lat, center.lng),
-          level: zoom,
-        });
-        mapInstance.current = map;
-
-        window.kakao.maps.event.addListener(map, "idle", () => {
-          const bounds = map.getBounds();
-          const visibleIds = (properties || [])
-            .filter((p) => {
-              const latlng = new window.kakao.maps.LatLng(
-                Number(p.lat),
-                Number(p.lng)
-              );
-              return bounds.contain(latlng);
-            })
-            .map((p) => p.id);
-
-          if (onMapChange) {
-            onMapChange({
-              center: {
-                lat: map.getCenter().getLat(),
-                lng: map.getCenter().getLng(),
-              },
-              zoom: map.getLevel(),
-              bounds: bounds,
-            });
-          }
-        });
-
-        if (onMapChange) {
-          onMapChange({
-            center: {
-              lat: map.getCenter().getLat(),
-              lng: map.getCenter().getLng(),
-            },
-            zoom: map.getLevel(),
-            bounds: map.getBounds(),
-          });
-        }
-      });
-    };
-
-    return () => {
-      document.head.removeChild(script);
-      overlaysRef.current.forEach((overlay) => overlay.setMap(null));
-      overlaysRef.current = [];
-    };
-  }, []);
-
-  useEffect(() => {
+  const drawOverlays = useCallback(() => {
     if (!mapInstance.current || !window.kakao?.maps) return;
 
     overlaysRef.current.forEach((overlay) => overlay.setMap(null));
@@ -101,7 +51,7 @@ export default function Map({
           onLeave: () => setHoveredId(null),
           onClick: () => {
             setActiveId(property.id);
-            if (onMarkerClick) onMarkerClick(property);
+            setSelectedProperty(property);
             setTimeout(() => setActiveId(null), 300);
           },
         });
@@ -131,8 +81,8 @@ export default function Map({
           count: group.length,
           onClick: () => {
             const currentLevel = mapInstance.current.getLevel();
-            if (currentLevel <= 3) return;
-            mapInstance.current.setLevel(Math.max(currentLevel - 2, 3));
+            if (currentLevel <= 2) return;
+            mapInstance.current.setLevel(Math.max(currentLevel - 2, 2));
             mapInstance.current.setCenter(
               new window.kakao.maps.LatLng(centerLat, centerLng)
             );
@@ -149,14 +99,65 @@ export default function Map({
         overlaysRef.current.push(overlay);
       }
     });
-  }, [
-    properties,
-    onMarkerClick,
-    mapInstance.current,
-    highlightedIds,
-    hoveredId,
-    activeId,
-  ]);
+  }, [properties, highlightedIds, setSelectedProperty]);
+
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_API_KEY}&autoload=false&libraries=clusterer`;
+    script.async = true;
+    document.head.appendChild(script);
+
+    script.onload = () => {
+      window.kakao.maps.load(() => {
+        const mapOptions = {
+          center: new window.kakao.maps.LatLng(center.lat, center.lng),
+          level: zoom,
+          minLevel: 2,
+          maxLevel: 5,
+        };
+        const map = new window.kakao.maps.Map(mapRef.current, mapOptions);
+        mapInstance.current = map;
+        setMapInstance(map);
+        setCurrentZoom(map.getLevel());
+        setZoomLimits({ min: mapOptions.minLevel, max: mapOptions.maxLevel });
+
+        let debounceTimeout;
+        window.kakao.maps.event.addListener(map, "idle", () => {
+          clearTimeout(debounceTimeout);
+          debounceTimeout = setTimeout(() => {
+            setMapBounds(map.getBounds());
+          }, 200);
+        });
+
+        window.kakao.maps.event.addListener(map, "zoom_changed", () => {
+          setCurrentZoom(map.getLevel());
+          if (schoolOverlayRef.current) {
+            const currentLevel = map.getLevel();
+            schoolOverlayRef.current.setMap(
+              currentLevel <= SCHOOL_MARKER_MAX_LEVEL ? map : null
+            );
+          }
+          drawOverlays();
+        });
+
+        setMapBounds(map.getBounds());
+      });
+    };
+
+    return () => {
+      const scripts = document.head.getElementsByTagName("script");
+      for (let i = 0; i < scripts.length; i++) {
+        if (scripts[i].src.includes("dapi.kakao.com")) {
+          document.head.removeChild(scripts[i]);
+          break;
+        }
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    drawOverlays();
+  }, [properties, highlightedIds, drawOverlays]);
 
   useEffect(() => {
     if (!mapInstance.current || !window.kakao?.maps) return;
@@ -166,36 +167,30 @@ export default function Map({
       schoolOverlayRef.current = null;
     }
 
-    if (
-      schoolBuilding &&
-      schoolBuilding.building_lat &&
-      schoolBuilding.building_lng
-    ) {
+    if (selectedSchool?.building_lat && selectedSchool?.building_lng) {
       const div = createSchoolOverlay();
       const position = new window.kakao.maps.LatLng(
-        Number(schoolBuilding.building_lat),
-        Number(schoolBuilding.building_lng)
+        Number(selectedSchool.building_lat),
+        Number(selectedSchool.building_lng)
       );
-
       const overlay = new window.kakao.maps.CustomOverlay({
         position,
         content: div,
         yAnchor: 1,
       });
 
-      overlay.setMap(mapInstance.current);
-      schoolOverlayRef.current = overlay;
+      const currentLevel = mapInstance.current.getLevel();
+      if (currentLevel <= SCHOOL_MARKER_MAX_LEVEL) {
+        overlay.setMap(mapInstance.current);
+      }
 
+      schoolOverlayRef.current = overlay;
       mapInstance.current.setCenter(position);
     }
-  }, [schoolBuilding]);
+  }, [selectedSchool]);
 
   useEffect(() => {
-    if (
-      selectedProperty &&
-      mapInstance.current &&
-      typeof mapInstance.current.setCenter === "function"
-    ) {
+    if (selectedProperty && mapInstance.current?.setCenter) {
       const moveLatLng = new window.kakao.maps.LatLng(
         selectedProperty.lat,
         selectedProperty.lng

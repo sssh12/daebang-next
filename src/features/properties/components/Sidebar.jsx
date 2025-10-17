@@ -7,21 +7,22 @@ import FilterPanel from "./FilterPanel";
 import { getDistance } from "../utils/getDistance";
 import { createClient } from "@/lib/supabase/client";
 import { filterComparators, isActiveFilter } from "../utils/filterUtils";
+import { useMapStore } from "@/store/mapStore";
 
-export default function Sidebar({
-  properties,
-  onSelect,
-  selectedProperty,
-  filterValues,
-  setFilterValues,
-  setHighlightedIds,
-  onSchoolSelect,
-}) {
+export default function Sidebar() {
   const [departmentBuildings, setDepartmentBuildings] = useState([]);
   const [filterOpen, setFilterOpen] = useState(false);
   const [filterVisible, setFilterVisible] = useState(false);
   const headerRef = useRef(null);
   const supabase = createClient();
+
+  const {
+    properties,
+    filterValues,
+    setFilterValues,
+    setHighlightedIds,
+    setSelectedSchool,
+  } = useMapStore();
 
   useEffect(() => {
     async function fetchBuildings() {
@@ -32,18 +33,18 @@ export default function Sidebar({
           .eq("id", Number(filterValues.department));
         if (!error && data && data.length > 0) {
           setDepartmentBuildings(data);
-          if (onSchoolSelect) onSchoolSelect(data[0]);
+          setSelectedSchool(data[0]);
         } else {
           setDepartmentBuildings([]);
-          if (onSchoolSelect) onSchoolSelect(null);
+          setSelectedSchool(null);
         }
       } else {
         setDepartmentBuildings([]);
-        if (onSchoolSelect) onSchoolSelect(null);
+        setSelectedSchool(null);
       }
     }
     fetchBuildings();
-  }, [filterValues?.department, onSchoolSelect]);
+  }, [filterValues?.department, setSelectedSchool, supabase]);
 
   const highlightedIds = useMemo(() => {
     if (!filterValues) return new Set();
@@ -85,7 +86,7 @@ export default function Sidebar({
   }, [properties, filterValues, departmentBuildings]);
 
   useEffect(() => {
-    if (setHighlightedIds) setHighlightedIds(highlightedIds);
+    setHighlightedIds(highlightedIds);
   }, [highlightedIds, setHighlightedIds]);
 
   const sortedProperties = useMemo(() => {
@@ -115,7 +116,6 @@ export default function Sidebar({
     <aside className="flex flex-col h-full relative">
       <SidebarHeader
         filterValues={filterValues}
-        setFilterValues={setFilterValues}
         onFilterButton={handleFilterButton}
         onResetFilter={handleResetFilter}
         headerRef={headerRef}
@@ -138,8 +138,6 @@ export default function Sidebar({
       <PropertyList
         properties={sortedProperties}
         highlightedIds={highlightedIds}
-        selectedProperty={selectedProperty}
-        onSelect={onSelect}
       />
     </aside>
   );

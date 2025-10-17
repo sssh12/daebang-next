@@ -19,7 +19,9 @@ export async function GET(request) {
 
   const { data, error } = await supabase
     .from("properties")
-    .select("*")
+    .select(
+      "id, title, price_type, price, deposit, room_type, lat, lng, images, room_size, floor, maintenance_fee, distance_type, safety_options, living_options, pet_allowed"
+    )
     .gte("lat", sw_lat)
     .lte("lat", ne_lat)
     .gte("lng", sw_lng)
