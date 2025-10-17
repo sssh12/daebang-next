@@ -41,7 +41,7 @@ export function createMarkerOverlay({
   return div;
 }
 
-export function createSchoolOveray() {
+export function createSchoolOverlay() {
   const div = document.createElement("div");
   div.innerHTML = renderToStaticMarkup(<SchoolMarker />);
   div.style.cssText = `

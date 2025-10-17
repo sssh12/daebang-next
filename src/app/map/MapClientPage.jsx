@@ -1,24 +1,44 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useCallback } from "react";
 import Sidebar from "@/components/Sidebar";
 import PropertyDetail from "@/components/PropertyDetail";
 import dynamic from "next/dynamic";
 
 const Map = dynamic(() => import("@/components/Map"), { ssr: false });
 
-export default function MapClientPage({ center, properties }) {
+export default function MapClientPage({ center }) {
+  const [properties, setProperties] = useState([]);
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [mapCenter, setMapCenter] = useState(center);
   const [mapZoom, setMapZoom] = useState(3);
-  const [visibleIds, setVisibleIds] = useState([]);
   const [filterValues, setFilterValues] = useState(null);
   const [highlightedIds, setHighlightedIds] = useState(new Set());
   const [selectedSchool, setSelectedSchool] = useState(null);
 
-  const visibleProperties = useMemo(
-    () => properties.filter((p) => visibleIds.includes(p.id)),
-    [properties, visibleIds]
-  );
+  const fetchProperties = useCallback(async (bounds) => {
+    if (!bounds) return;
+
+    const sw = bounds.getSouthWest();
+    const ne = bounds.getNorthEast();
+
+    const query = new URLSearchParams({
+      sw_lat: sw.getLat(),
+      sw_lng: sw.getLng(),
+      ne_lat: ne.getLat(),
+      ne_lng: ne.getLng(),
+    }).toString();
+
+    try {
+      const response = await fetch(`/api/properties?${query}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch properties");
+      }
+      const data = await response.json();
+      setProperties(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
 
   return (
     <div className="flex h-[calc(100vh-80px)]">
@@ -30,7 +50,7 @@ export default function MapClientPage({ center, properties }) {
           />
         ) : (
           <Sidebar
-            properties={visibleProperties}
+            properties={properties}
             onSelect={setSelectedProperty}
             selectedProperty={selectedProperty}
             filterValues={filterValues}
@@ -48,11 +68,13 @@ export default function MapClientPage({ center, properties }) {
           properties={properties}
           selectedProperty={selectedProperty}
           onMarkerClick={setSelectedProperty}
-          onMapChange={({ center, zoom }) => {
+          onMapChange={({ center, zoom, bounds }) => {
             setMapCenter(center);
             setMapZoom(zoom);
+            if (bounds) {
+              fetchProperties(bounds);
+            }
           }}
-          onVisiblePropertiesChange={setVisibleIds}
           highlightedIds={highlightedIds}
           schoolBuilding={selectedSchool}
         />

@@ -4,9 +4,8 @@ import { getPixelClusters } from "@/utils/getPixelClusters";
 import {
   createMarkerOverlay,
   createClusterOverlay,
-  createSchoolOveray,
+  createSchoolOverlay,
 } from "@/utils/createOverlay";
-import { map } from "zod";
 
 export default function Map({
   center,
@@ -15,7 +14,6 @@ export default function Map({
   selectedProperty,
   onMarkerClick,
   onMapChange,
-  onVisiblePropertiesChange,
   highlightedIds = new Set(),
   schoolBuilding,
 }) {
@@ -40,23 +38,9 @@ export default function Map({
         });
         mapInstance.current = map;
 
-        if (onVisiblePropertiesChange) {
-          const bounds = map.getBounds();
-          const visibleIds = properties
-            .filter((p) => {
-              const latlng = new window.kakao.maps.LatLng(
-                Number(p.lat),
-                Number(p.lng)
-              );
-              return bounds.contain(latlng);
-            })
-            .map((p) => p.id);
-          onVisiblePropertiesChange(visibleIds);
-        }
-
         window.kakao.maps.event.addListener(map, "idle", () => {
           const bounds = map.getBounds();
-          const visibleIds = properties
+          const visibleIds = (properties || [])
             .filter((p) => {
               const latlng = new window.kakao.maps.LatLng(
                 Number(p.lat),
@@ -65,16 +49,29 @@ export default function Map({
               return bounds.contain(latlng);
             })
             .map((p) => p.id);
-          if (onVisiblePropertiesChange) onVisiblePropertiesChange(visibleIds);
-          if (onMapChange)
+
+          if (onMapChange) {
             onMapChange({
               center: {
                 lat: map.getCenter().getLat(),
                 lng: map.getCenter().getLng(),
               },
               zoom: map.getLevel(),
+              bounds: bounds,
             });
+          }
         });
+
+        if (onMapChange) {
+          onMapChange({
+            center: {
+              lat: map.getCenter().getLat(),
+              lng: map.getCenter().getLng(),
+            },
+            zoom: map.getLevel(),
+            bounds: map.getBounds(),
+          });
+        }
       });
     };
 
@@ -86,40 +83,39 @@ export default function Map({
   }, []);
 
   useEffect(() => {
-    if (!mapInstance.current || !window.kakao?.maps) return;
+    if (!mapInstance.current || !window.kakao?.maps || !properties) {
+      // properties가 아직 로드되지 않았을 경우, 기존 오버레이를 모두 지웁니다.
+      overlaysRef.current.forEach((overlay) => overlay.setMap(null));
+      overlaysRef.current = [];
+      return;
+    }
 
-    overlaysRef.current.forEach((overlay) => overlay.setMap(null));
-    overlaysRef.current = [];
+    // 1. 기존 오버레이들을 부드럽게 사라지게 합니다.
+    overlaysRef.current.forEach((oldOverlay) => {
+      const content = oldOverlay.getContent();
+      if (content) {
+        content.style.opacity = "0"; // 투명도를 0으로 만들어 fade-out 시작
+      }
+      // 애니메이션 시간(300ms)이 지난 후 지도에서 완전히 제거합니다.
+      setTimeout(() => {
+        oldOverlay.setMap(null);
+      }, 300);
+    });
 
+    // 2. 새로운 오버레이들을 계산하고 지도에 추가합니다.
     const clusters = getPixelClusters(properties, mapInstance.current, 44);
-
-    clusters.forEach((group) => {
+    const newOverlays = clusters.map((group) => {
+      let div, position;
       if (group.length === 1) {
         const property = group[0];
-        const isHighlighted = highlightedIds.has(property.id);
-
-        const div = createMarkerOverlay({
-          isHighlighted,
-          onHover: () => setHoveredId(property.id),
-          onLeave: () => setHoveredId(null),
-          onClick: () => {
-            setActiveId(property.id);
-            if (onMarkerClick) onMarkerClick(property);
-            setTimeout(() => setActiveId(null), 300);
-          },
+        div = createMarkerOverlay({
+          isHighlighted: highlightedIds.has(property.id),
+          onClick: () => onMarkerClick?.(property),
         });
-
-        const overlay = new window.kakao.maps.CustomOverlay({
-          position: new window.kakao.maps.LatLng(
-            Number(property.lat),
-            Number(property.lng)
-          ),
-          content: div,
-          yAnchor: 1,
-        });
-
-        overlay.setMap(mapInstance.current);
-        overlaysRef.current.push(overlay);
+        position = new window.kakao.maps.LatLng(
+          Number(property.lat),
+          Number(property.lng)
+        );
       } else {
         const centerLat =
           group.reduce((acc, cur) => acc + Number(cur.lat), 0) / group.length;
@@ -128,57 +124,22 @@ export default function Map({
         const hasRecommended = group.some((item) =>
           highlightedIds.has(item.id)
         );
-
-        const div = createClusterOverlay({
+        div = createClusterOverlay({
           hasRecommended,
           count: group.length,
           onClick: () => {
             const currentLevel = mapInstance.current.getLevel();
-            if (currentLevel <= 3) return;
-            mapInstance.current.setLevel(Math.max(currentLevel - 2, 3));
-            mapInstance.current.setCenter(
-              new window.kakao.maps.LatLng(centerLat, centerLng)
-            );
+            if (currentLevel > 3) {
+              mapInstance.current.setLevel(currentLevel - 1, {
+                anchor: new window.kakao.maps.LatLng(centerLat, centerLng),
+              });
+            }
           },
         });
-
-        const overlay = new window.kakao.maps.CustomOverlay({
-          position: new window.kakao.maps.LatLng(centerLat, centerLng),
-          content: div,
-          yAnchor: 1,
-        });
-
-        overlay.setMap(mapInstance.current);
-        overlaysRef.current.push(overlay);
+        position = new window.kakao.maps.LatLng(centerLat, centerLng);
       }
-    });
-  }, [
-    properties,
-    onMarkerClick,
-    mapInstance.current,
-    highlightedIds,
-    hoveredId,
-    activeId,
-  ]);
 
-  useEffect(() => {
-    if (!mapInstance.current || !window.kakao?.maps) return;
-
-    if (schoolOverlayRef.current) {
-      schoolOverlayRef.current.setMap(null);
-      schoolOverlayRef.current = null;
-    }
-
-    if (
-      schoolBuilding &&
-      schoolBuilding.building_lat &&
-      schoolBuilding.building_lng
-    ) {
-      const div = createSchoolOveray();
-      const position = new window.kakao.maps.LatLng(
-        Number(schoolBuilding.building_lat),
-        Number(schoolBuilding.building_lng)
-      );
+      div.style.opacity = "0"; // 처음에는 투명하게 시작
 
       const overlay = new window.kakao.maps.CustomOverlay({
         position,
@@ -186,24 +147,46 @@ export default function Map({
         yAnchor: 1,
       });
 
-      overlay.setMap(mapInstance.current);
-      schoolOverlayRef.current = overlay;
+      overlay.setMap(mapInstance.current); // 지도에 추가
 
+      // 브라우저가 렌더링할 준비가 되었을 때, 투명도를 1로 바꿔 fade-in 효과를 줍니다.
+      requestAnimationFrame(() => {
+        div.style.opacity = "1";
+      });
+
+      return overlay;
+    });
+
+    // 3. 최신 오버레이 목록으로 교체합니다.
+    overlaysRef.current = newOverlays;
+  }, [properties, highlightedIds, onMarkerClick]);
+
+  useEffect(() => {
+    if (!mapInstance.current) return;
+    schoolOverlayRef.current?.setMap(null);
+    if (schoolBuilding?.building_lat && schoolBuilding?.building_lng) {
+      const div = createSchoolOveray();
+      const position = new window.kakao.maps.LatLng(
+        Number(schoolBuilding.building_lat),
+        Number(schoolBuilding.building_lng)
+      );
+      schoolOverlayRef.current = new window.kakao.maps.CustomOverlay({
+        position,
+        content: div,
+        yAnchor: 1,
+      });
+      schoolOverlayRef.current.setMap(mapInstance.current);
       mapInstance.current.setCenter(position);
     }
   }, [schoolBuilding]);
 
   useEffect(() => {
-    if (
-      selectedProperty &&
-      mapInstance.current &&
-      typeof mapInstance.current.setCenter === "function"
-    ) {
+    if (selectedProperty && mapInstance.current) {
       const moveLatLng = new window.kakao.maps.LatLng(
         selectedProperty.lat,
         selectedProperty.lng
       );
-      mapInstance.current.setCenter(moveLatLng);
+      mapInstance.current.panTo(moveLatLng);
     }
   }, [selectedProperty]);
 

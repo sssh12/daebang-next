@@ -1,7 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import MapClientPage from "./MapClientPage";
 
-// 디폴트 좌표(비로그인 시 서울대)
 const DEFAULT_CENTER = { lat: 36.337093681740996, lng: 127.4450861750031 };
 
 export default async function MapPage() {
@@ -33,7 +32,5 @@ export default async function MapPage() {
     }
   }
 
-  const { data: properties } = await supabase.from("properties").select("*");
-
-  return <MapClientPage center={center} properties={properties || []} />;
+  return <MapClientPage center={center} />;
 }

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Undo2, Heart, Share2 } from "lucide-react";
+import Image from "next/image";
 
 export default function PropertyDetail({ property, onClose }) {
   const [imgIdx, setImgIdx] = useState(0);
@@ -30,10 +31,13 @@ export default function PropertyDetail({ property, onClose }) {
         <div className="relative w-full h-72 bg-gray-100 flex items-center justify-center">
           {images.length > 0 ? (
             <>
-              <img
+              <Image
                 src={images[imgIdx]}
                 alt={`매물 이미지 ${imgIdx + 1}`}
-                className="object-cover w-full h-full"
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="object-cover"
+                priority
               />
               {images.length > 1 && (
                 <>

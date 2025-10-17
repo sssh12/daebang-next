@@ -1,6 +1,7 @@
 "use client";
 
 import { Star } from "lucide-react";
+import Image from "next/image";
 
 export default function PropertyListItem({
   property,
@@ -13,18 +14,21 @@ export default function PropertyListItem({
       className={`flex p-2 mb-2 mx-1 rounded-md overflow-hidden shadow-sm hover:shadow-lg cursor-pointer transition
         ${
           highlighted
-            ? "border-3 border-accent bg-gray-50"
-            : "border-3 border-gray-100 bg-gray-50"
+            ? "border-2 border-accent bg-gray-50"
+            : "border-2 border-gray-100 bg-gray-50"
         }
       `}
       onClick={onClick}
     >
-      <div className="w-32 h-24 bg-gray-100 rounded-xl flex-shrink-0">
+      <div className="relative w-32 h-24 bg-gray-100 rounded-xl flex-shrink-0">
         {property.images?.[0] ? (
-          <img
+          <Image
             src={property.images[0]}
             alt={property.title}
-            className="object-cover rounded-xl w-full h-full"
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover rounded-xl"
+            priority
           />
         ) : (
           <div className="flex items-center justify-center h-full text-gray-400">
