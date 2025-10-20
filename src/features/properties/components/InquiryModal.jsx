@@ -37,8 +37,17 @@ export default function InquiryModal({ property, onClose }) {
   if (isLoading) {
     return createPortal(
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-        <div className="bg-white rounded-lg p-8 max-w-sm w-full text-center">
-          <p>로딩 중...</p>
+        <div className="bg-white rounded-lg p-6 max-w-md w-full shadow-xl relative">
+          <button
+            onClick={onClose}
+            className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 transition cursor-pointer"
+            aria-label="닫기"
+          >
+            <X size={24} />
+          </button>
+          <div className="p-8 w-full text-center">
+            <p>로딩 중...</p>
+          </div>
         </div>
       </div>,
       document.body
