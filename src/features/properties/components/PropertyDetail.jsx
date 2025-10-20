@@ -3,13 +3,22 @@
 import { useState } from "react";
 import { Undo2, Heart, Share2 } from "lucide-react";
 import Image from "next/image";
+import InquiryModal from "./InquiryModal";
 
 export default function PropertyDetail({ property, onClose }) {
   const [imgIdx, setImgIdx] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   if (!property) return null;
 
   const images = property.images?.length ? property.images : [];
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <div className="h-full flex flex-col">
@@ -129,10 +138,15 @@ export default function PropertyDetail({ property, onClose }) {
         </div>
       </div>
       <div className="p-4 border-t flex gap-2">
-        <button className="flex-1 font-semibold bg-accent hover:bg-main text-white py-2 rounded active:scale-98 transition cursor-pointer">
+        <button
+          onClick={openModal}
+          className="flex-1 font-semibold bg-accent hover:bg-main text-white py-2 rounded active:scale-98 transition cursor-pointer"
+        >
           문의하기
         </button>
       </div>
+      {/* 모달 렌더링 */}
+      {isModalOpen && <InquiryModal property={property} onClose={closeModal} />}
     </div>
   );
 }
