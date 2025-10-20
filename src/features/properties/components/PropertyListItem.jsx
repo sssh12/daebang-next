@@ -3,12 +3,7 @@
 import { Star } from "lucide-react";
 import Image from "next/image";
 
-export default function PropertyListItem({
-  property,
-  highlighted,
-
-  onClick,
-}) {
+export default function PropertyListItem({ property, highlighted, onClick }) {
   return (
     <li
       className={`flex p-2 mb-2 mx-1 rounded overflow-hidden shadow-sm hover:shadow-lg cursor-pointer transition

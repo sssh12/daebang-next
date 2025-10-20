@@ -5,6 +5,7 @@ import PropertyDetail from "@/features/properties/components/PropertyDetail";
 import dynamic from "next/dynamic";
 import { useMapStore } from "@/store/mapStore";
 import { Plus, Minus } from "lucide-react";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 const Map = dynamic(() => import("@/features/map/components/Map"), {
   ssr: false,
@@ -17,6 +18,7 @@ export default function MapClientPage({ center }) {
     mapBounds,
     fetchProperties,
     mapInstance,
+    isLoading,
     currentZoom,
     minZoom,
     maxZoom,
@@ -57,6 +59,7 @@ export default function MapClientPage({ center }) {
       </aside>
       <div className="flex-1 h-full relative z-20">
         <Map center={center} zoom={3} />
+        {isLoading && <LoadingSpinner />}
         <div className="absolute top-4 right-4 z-20 flex flex-col gap-2">
           <button
             onClick={handleZoomIn}
