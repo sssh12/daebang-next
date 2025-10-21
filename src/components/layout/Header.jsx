@@ -134,25 +134,20 @@ export default function Header({ initialUserName, initialSchoolName }) {
         />
       </Link>
       <div className="flex justify-between">
-        <nav className="flex justify-center items-center mr-16">
-          <ul className="hidden md:flex items-center space-x-5">
-            {NAV_LINKS.map((link) => {
-              const isAgentLink = link.key === "agent";
-              return (
-                <li key={link.key}>
-                  <Link
-                    href={link.href}
-                    className={`p-3 cursor-pointer rounded hover:bg-gray-100 transition ${
-                      pathName === link.href ? "text-accent font-semibold" : ""
-                    }`}
-                    target={isAgentLink ? "_blank" : undefined}
-                    rel={isAgentLink ? "noopener noreferrer" : undefined}
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              );
-            })}
+        <nav className="flex justify-center items-center mx-10">
+          <ul className="hidden md:flex items-center space-x-3">
+            {NAV_LINKS.map((link) => (
+              <li key={link.key}>
+                <Link
+                  href={link.href}
+                  className={`p-3 cursor-pointer rounded hover:bg-gray-100 transition ${
+                    pathName === link.href ? "text-accent font-semibold" : ""
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
           </ul>
         </nav>
         {isLoggedIn ? (
@@ -165,17 +160,26 @@ export default function Header({ initialUserName, initialSchoolName }) {
             </div>
             <button
               onClick={handleLogout}
-              className="cursor-pointer hidden font-semibold md:block bg-accent text-white px-5 py-2 rounded hover:bg-main active:scale-98 transition "
+              className="cursor-pointer hidden md:block border border-accent text-black px-5 py-1.5 hover:bg-gray-100 active:scale-98 transition "
             >
               로그아웃
             </button>
           </div>
         ) : (
-          <Link href="/login">
-            <button className="cursor-pointer hidden font-semibold md:block bg-accent text-white px-5 py-2 rounded hover:bg-main active:scale-98 transition ">
-              로그인
-            </button>
-          </Link>
+          <div className="flex justify-between items-center">
+            <Link href="/login">
+              <button className="cursor-pointer hidden md:block border border-accent text-black px-5 py-1.5 hover:bg-gray-100 active:scale-98 transition ">
+                로그인
+                <span className="text-sm text-gray-500 mx-2">|</span>
+                회원가입
+              </button>
+            </Link>
+            <Link href="/agent" target="_blank" rel="noopener noreferrer">
+              <button className="cursor-pointer ml-2 hidden md:block border border-accent text-black px-5 py-1.5 hover:bg-gray-100 active:scale-98 transition ">
+                중개사 회원가입
+              </button>
+            </Link>
+          </div>
         )}
       </div>
     </header>
