@@ -4,7 +4,7 @@ import { NAV_LINKS } from "@/constants";
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 export default function Header() {
@@ -13,6 +13,7 @@ export default function Header() {
   const [schoolName, setSchoolName] = useState("");
   const supabase = createClient();
   const router = useRouter();
+  const pathName = usePathname();
 
   useEffect(() => {
     const { data: listener } = supabase.auth.onAuthStateChange(
@@ -73,7 +74,9 @@ export default function Header() {
               <li key={link.key}>
                 <Link
                   href={link.href}
-                  className="p-3 cursor-pointer rounded hover:bg-gray-100 transition"
+                  className={`p-3 cursor-pointer rounded hover:bg-gray-100 transition ${
+                    pathName === link.href ? "text-accent font-semibold" : ""
+                  }`}
                 >
                   {link.label}
                 </Link>
