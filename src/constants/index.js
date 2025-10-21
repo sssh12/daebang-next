@@ -2,8 +2,8 @@ export const NAV_LINKS = [
   { href: "/map", key: "map", label: "지도" },
   { href: "/favorite", key: "favorite", label: "관심 목록" },
   {
-    href: "/properties/new",
-    key: "properties/new",
+    href: "/agent",
+    key: "agent",
     label: "방 내놓기(테스트용)",
   },
 ];

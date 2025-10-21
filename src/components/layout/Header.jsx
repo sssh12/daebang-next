@@ -70,18 +70,23 @@ export default function Header() {
       <div className="flex justify-between">
         <nav className="flex justify-center items-center mr-16">
           <ul className="hidden md:flex items-center space-x-5">
-            {NAV_LINKS.map((link) => (
-              <li key={link.key}>
-                <Link
-                  href={link.href}
-                  className={`p-3 cursor-pointer rounded hover:bg-gray-100 transition ${
-                    pathName === link.href ? "text-accent font-semibold" : ""
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
+            {NAV_LINKS.map((link) => {
+              const isAgentLink = link.key === "agent";
+              return (
+                <li key={link.key}>
+                  <Link
+                    href={link.href}
+                    className={`p-3 cursor-pointer rounded hover:bg-gray-100 transition ${
+                      pathName === link.href ? "text-accent font-semibold" : ""
+                    }`}
+                    target={isAgentLink ? "_blank" : undefined}
+                    rel={isAgentLink ? "noopener noreferrer" : undefined}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </nav>
         {isLoggedIn ? (
