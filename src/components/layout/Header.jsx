@@ -7,10 +7,10 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-export default function Header() {
+export default function Header({ initialUserName, initialSchoolName }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userName, setUserName] = useState("");
-  const [schoolName, setSchoolName] = useState("");
+  const [userName, setUserName] = useState(initialUserName || "");
+  const [schoolName, setSchoolName] = useState(initialSchoolName || "");
   const supabase = createClient();
   const router = useRouter();
   const pathName = usePathname();
@@ -32,8 +32,10 @@ export default function Header() {
 
         if (userError) throw userError;
 
-        setUserName(userData?.name || "");
+        let finalUserName = userData?.name || "";
+        let finalSchoolName = "";
 
+        setUserName(userData?.name || "");
         if (userData?.school_id) {
           const { data: schoolData, error: schoolError } = await supabase
             .from("school")
@@ -42,12 +44,14 @@ export default function Header() {
             .single();
 
           if (schoolError) throw schoolError;
-          setSchoolName(schoolData?.name || "");
-        } else {
-          setSchoolName("");
+          finalSchoolName = schoolData?.name || "";
         }
+
+        setUserName(finalUserName);
+        setSchoolName(finalSchoolName);
       } catch (error) {
         console.error("Error fetching user data:", error);
+
         setUserName("");
         setSchoolName("");
       }
@@ -123,9 +127,10 @@ export default function Header() {
         <Image
           src="/logo.png"
           alt="Logo"
-          width={120}
-          height={40}
+          width={53}
+          height={48}
           className="object-contain h-12 w-auto"
+          priority
         />
       </Link>
       <div className="flex justify-between">
@@ -153,7 +158,7 @@ export default function Header() {
         {isLoggedIn ? (
           <div className="flex items-center gap-4">
             <div className="hidden md:flex flex-col items-end mr-2 hover:bg-gray-100 p-2 rounded transition cursor-pointer">
-              <span className="font-semibold">{userName || "사용자"}님</span>{" "}
+              <span className="font-semibold">{userName || ""}님</span>{" "}
               {schoolName && (
                 <span className="text-main text-sm">{schoolName}</span>
               )}

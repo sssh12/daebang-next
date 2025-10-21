@@ -27,6 +27,12 @@ export async function middleware(request) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const { pathname } = request.nextUrl;
+
+  if (user && (pathname === "/login" || pathname === "/signup")) {
+    return NextResponse.redirect(new URL("/map", request.url));
+  }
+
   return supabaseResponse;
 }
 

@@ -105,7 +105,7 @@ export default function LoginPage() {
           </div>
           <button
             type="submit"
-            className="w-full bg-main text-white py-2 rounded font-semibold hover:bg-accent transition active:scale-98 cursor-pointer"
+            className="w-full bg-accent text-white py-2 rounded font-semibold hover:bg-main transition active:scale-98 cursor-pointer"
             disabled={isSubmitting}
           >
             {isSubmitting ? "로그인 중..." : "로그인"}
