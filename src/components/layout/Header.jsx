@@ -3,7 +3,7 @@
 import { NAV_LINKS } from "@/constants";
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -15,30 +15,54 @@ export default function Header() {
   const router = useRouter();
   const pathName = usePathname();
 
+  const fetchAndSetUserData = useCallback(
+    async (userId) => {
+      if (!userId) {
+        setUserName("");
+        setSchoolName("");
+        return;
+      }
+
+      try {
+        const { data: userData, error: userError } = await supabase
+          .from("user")
+          .select("name, school_id")
+          .eq("id", userId)
+          .single();
+
+        if (userError) throw userError;
+
+        setUserName(userData?.name || "");
+
+        if (userData?.school_id) {
+          const { data: schoolData, error: schoolError } = await supabase
+            .from("school")
+            .select("name")
+            .eq("id", userData.school_id)
+            .single();
+
+          if (schoolError) throw schoolError;
+          setSchoolName(schoolData?.name || "");
+        } else {
+          setSchoolName("");
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+        setUserName("");
+        setSchoolName("");
+      }
+    },
+    [supabase]
+  );
+
   useEffect(() => {
     const { data: listener } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
-        setIsLoggedIn(!!session);
+        const loggedIn = !!session;
+        setIsLoggedIn(loggedIn);
 
-        if (session?.user) {
-          const userId = session.user.id;
-          const { data: userData } = await supabase
-            .from("user")
-            .select("name, school_id")
-            .eq("id", userId)
-            .single();
-          setUserName(userData?.name || "");
-
-          if (userData?.school_id) {
-            const { data: schoolData } = await supabase
-              .from("school")
-              .select("name")
-              .eq("id", userData.school_id)
-              .single();
-            setSchoolName(schoolData?.name || "");
-          } else {
-            setSchoolName("");
-          }
+        if (loggedIn && session.user) {
+          fetchAndSetUserData(session.user.id);
         } else {
           setUserName("");
           setSchoolName("");
@@ -48,10 +72,47 @@ export default function Header() {
     return () => {
       listener?.subscription.unsubscribe();
     };
-  }, []);
+  }, [supabase, fetchAndSetUserData]);
+
+  useEffect(() => {
+    const handleVisibilityChange = async () => {
+      if (document.visibilityState === "visible") {
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession();
+        if (error) {
+          console.error("Error refreshing session:", error);
+          setIsLoggedIn(false);
+          setUserName("");
+          setSchoolName("");
+          return;
+        }
+        const loggedIn = !!session;
+        setIsLoggedIn(loggedIn);
+        if (loggedIn && session.user) {
+          fetchAndSetUserData(session.user.id);
+        } else if (!loggedIn) {
+          setUserName("");
+          setSchoolName("");
+        }
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    handleVisibilityChange();
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [supabase, fetchAndSetUserData]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    setIsLoggedIn(false);
+    setUserName("");
+    setSchoolName("");
     router.push("/");
     router.refresh();
   };
@@ -92,7 +153,7 @@ export default function Header() {
         {isLoggedIn ? (
           <div className="flex items-center gap-4">
             <div className="hidden md:flex flex-col items-end mr-2 hover:bg-gray-100 p-2 rounded transition cursor-pointer">
-              <span className="font-semibold">{userName}님</span>
+              <span className="font-semibold">{userName || "사용자"}님</span>{" "}
               {schoolName && (
                 <span className="text-main text-sm">{schoolName}</span>
               )}

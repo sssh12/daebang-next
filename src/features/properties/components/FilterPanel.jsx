@@ -26,10 +26,17 @@ export default function FilterPanel({ visible, onApply, onClose }) {
         .from("department")
         .select("id, name")
         .then(({ data, error }) => {
-          if (!error) setDepartments(data || []);
+          if (error) {
+            console.error("Error fetching departments:", error);
+          } else {
+            setDepartments(data || []);
+          }
+        })
+        .catch((error) => {
+          console.error("Unexpected error fetching departments:", error);
         });
     }
-  }, []);
+  }, [supabase]);
 
   const handleChange = (key, value) => {
     setFilterState((prev) => ({ ...prev, [key]: value }));
