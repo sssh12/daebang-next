@@ -126,7 +126,7 @@ export default function Map({ center, zoom }) {
           clearTimeout(debounceTimeout);
           debounceTimeout = setTimeout(() => {
             setMapBounds(map.getBounds());
-          }, 200);
+          }, 100);
         });
 
         window.kakao.maps.event.addListener(map, "zoom_changed", () => {
