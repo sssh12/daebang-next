@@ -1,4 +1,5 @@
 import Header from "@/components/layout/agent/Header";
+import Footer from "@/components/layout/agent/Footer";
 
 export const metadata = {
   title: {
@@ -11,7 +12,8 @@ export default function AgentLayout({ children }) {
   return (
     <>
       <Header />
-      <main className="mt-20">{children}</main>
+      <main className="mt-20 bg-blue-50">{children}</main>
+      <Footer />
     </>
   );
 }

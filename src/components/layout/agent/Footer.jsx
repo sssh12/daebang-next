@@ -10,7 +10,7 @@ export default function Footer() {
   if (pathname === "/map") return null;
 
   return (
-    <footer className="bg-gray-600 text-white py-8 shadow-top">
+    <footer className="bg-gray-800 text-white py-8 shadow-top">
       <div className="max-w-7xl mx-auto px-8 text-center">
         <p>&copy; {new Date().getFullYear()} 대방</p>
         <p className="mt-2 text-sm text-gray-400">

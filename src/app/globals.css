@@ -12,8 +12,8 @@ body {
 }
 
 @theme {
-  --color-main: #3d5a4d; /* 메인 컬러 */
-  --color-sub: #a3d9a5; /* 서브 컬러 */
-  --color-text: #2f4f4f; /* 텍스트 컬러 */
-  --color-accent: #4caf50; /* 액센트 컬러 */
+  --color-main: #3d5a4d;
+  --color-sub: #a3d9a5;
+  --color-text: #2f4f4f;
+  --color-accent: #4caf50;
 }
