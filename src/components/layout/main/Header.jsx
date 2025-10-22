@@ -170,7 +170,7 @@ export default function Header({ initialUserName, initialSchoolName }) {
             <Link href="/login">
               <button className="cursor-pointer hidden md:block border border-accent text-black px-5 py-1.5 hover:bg-gray-100 active:scale-98 transition ">
                 로그인
-                <span className="text-sm text-gray-500 mx-2">|</span>
+                <span className="text-md text-gray-300 mx-2">|</span>
                 회원가입
               </button>
             </Link>
