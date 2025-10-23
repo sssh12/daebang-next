@@ -174,7 +174,7 @@ export default function Header({ initialUserName, initialSchoolName }) {
                 회원가입
               </button>
             </Link>
-            <Link href="/agent/login" target="_blank" rel="noopener noreferrer">
+            <Link href="/agent" target="_blank" rel="noopener noreferrer">
               <button className="cursor-pointer ml-2 hidden md:block border border-accent text-black px-5 py-1.5 hover:bg-gray-100 active:scale-98 transition ">
                 중개사 회원가입
               </button>

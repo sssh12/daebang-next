@@ -19,7 +19,10 @@ export default function Header() {
       </Link>
       <div className="flex justify-between items-center">
         <Link href="/agent/login">
-          <button className="cursor-pointer hidden md:block border bg-white border-accent text-black px-5 py-1.5 hover:bg-gray-100 active:scale-98 transition ">
+          <button
+            className="cursor-pointer hidden md:block border bg-white border-accent text-black px-5 py-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={true}
+          >
             공인 중개사 로그인
             <span className="text-md text-gray-300 mx-2">|</span>
             회원가입
