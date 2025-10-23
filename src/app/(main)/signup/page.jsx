@@ -68,6 +68,7 @@ export default function SignupPage() {
           id: userId,
           name: values.name,
           school_id: Number(values.school_id),
+          role: "student",
         },
       ]);
 

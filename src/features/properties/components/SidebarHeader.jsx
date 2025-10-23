@@ -10,36 +10,41 @@ export default function SidebarHeader({
   filterOpen,
 }) {
   return (
-    <div
-      ref={headerRef}
-      className="p-4 m-1 flex justify-between items-center space-x-2 flex-shrink-0"
-    >
-      <input
-        className="w-full border border-gray-400 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
-        placeholder="검색어 입력(구현 예정)"
-      />
-      <button
-        className="w-1/4 h-full bg-accent hover:bg-main text-white px-2 py-1 rounded font-semibold transition cursor-pointer active:scale-98"
-        onClick={onFilterButton}
+    <>
+      <div
+        ref={headerRef}
+        className="p-4 flex justify-between items-center space-x-2 flex-shrink-0"
       >
-        <div className="flex justify-between items-center">
-          <span className="mx-0.5">{filterOpen ? "닫기" : "필터"}</span>
-          {filterOpen ? (
-            <X className="w-4 h-4 mr-1" />
-          ) : (
-            <ListFilterPlus className="w-4 h-4 mr-1" />
-          )}
-        </div>
-      </button>
-      {filterValues && (
+        <input
+          className="w-full border border-gray-400 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+          placeholder="검색어 입력(구현 예정)"
+        />
         <button
-          className="px-2 py-1 h-full border border-gray-300 rounded text-gray-500 hover:bg-gray-100 flex items-center justify-center cursor-pointer transition"
-          onClick={onResetFilter}
-          title="필터 초기화"
+          className="w-1/4 h-full bg-accent hover:bg-main text-white px-2 py-1 rounded font-semibold transition cursor-pointer active:scale-98"
+          onClick={onFilterButton}
         >
-          <RotateCcw className="w-4 h-4" />
+          <div className="flex justify-between items-center">
+            <span className="mx-0.5">{filterOpen ? "닫기" : "필터"}</span>
+            {filterOpen ? (
+              <X className="w-4 h-4 mr-1" />
+            ) : (
+              <ListFilterPlus className="w-4 h-4 mr-1" />
+            )}
+          </div>
         </button>
-      )}
-    </div>
+        {filterValues && (
+          <button
+            className="px-2 py-1 h-full border border-gray-300 rounded text-gray-500 hover:bg-gray-100 flex items-center justify-center cursor-pointer transition"
+            onClick={onResetFilter}
+            title="필터 초기화"
+          >
+            <RotateCcw className="w-4 h-4" />
+          </button>
+        )}
+      </div>
+      <p className="text-sm text-gray-500 mx-5">
+        표시되는 매물들은 임시 매물입니다.
+      </p>
+    </>
   );
 }

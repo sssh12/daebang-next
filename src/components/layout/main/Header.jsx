@@ -28,7 +28,7 @@ export default function Header({ initialUserName, initialSchoolName }) {
           .from("user")
           .select("name, school_id")
           .eq("id", userId)
-          .single();
+          .maybeSingle();
 
         if (userError) throw userError;
 
@@ -153,7 +153,7 @@ export default function Header({ initialUserName, initialSchoolName }) {
         {isLoggedIn ? (
           <div className="flex items-center gap-4">
             <div className="hidden md:flex flex-col items-end mr-2 hover:bg-gray-100 p-2 rounded transition cursor-pointer">
-              <span className="font-semibold">{userName || ""}님</span>{" "}
+              <span className="font-semibold">{userName || ""}님</span>
               {schoolName && (
                 <span className="text-main text-sm">{schoolName}</span>
               )}
