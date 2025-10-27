@@ -10,7 +10,7 @@ export const FILTER_CONFIG = [
     key: "tradeType",
     label: "거래유형",
     type: "button",
-    options: ["전체", "월세", "전세", "매매"],
+    options: ["전체", "월세", "전세"],
     default: "전체",
   },
   {

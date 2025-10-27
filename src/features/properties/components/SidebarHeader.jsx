@@ -42,9 +42,6 @@ export default function SidebarHeader({
           </button>
         )}
       </div>
-      <p className="text-sm text-gray-500 mx-5">
-        표시되는 매물들은 임시 매물입니다.
-      </p>
     </>
   );
 }

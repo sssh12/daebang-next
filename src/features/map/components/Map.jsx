@@ -112,7 +112,7 @@ export default function Map({ center, zoom }) {
         const mapOptions = {
           center: new window.kakao.maps.LatLng(center.lat, center.lng),
           level: zoom,
-          minLevel: 2,
+          minLevel: 1,
           maxLevel: 5,
         };
         const map = new window.kakao.maps.Map(mapRef.current, mapOptions);

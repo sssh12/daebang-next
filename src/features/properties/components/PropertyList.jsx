@@ -28,16 +28,21 @@ export default function PropertyList({ properties, highlightedIds }) {
   }
 
   return (
-    <ul className="space-y-4 flex-1 min-h-0 overflow-y-auto p-2">
-      {properties.map((p) => (
-        <PropertyListItem
-          key={p.id}
-          property={p}
-          highlighted={highlightedIds.has(p.id)}
-          selected={selectedProperty?.id === p.id}
-          onClick={() => setSelectedProperty(p)}
-        />
-      ))}
-    </ul>
+    <>
+      <p className="text-sm text-orange-500 font-bold mx-5 mb-1">
+        현재 표시되는 매물들은 예시로 임시 저장된 매물입니다.
+      </p>
+      <ul className="space-y-4 flex-1 min-h-0 overflow-y-auto p-2">
+        {properties.map((p) => (
+          <PropertyListItem
+            key={p.id}
+            property={p}
+            highlighted={highlightedIds.has(p.id)}
+            selected={selectedProperty?.id === p.id}
+            onClick={() => setSelectedProperty(p)}
+          />
+        ))}
+      </ul>
+    </>
   );
 }
