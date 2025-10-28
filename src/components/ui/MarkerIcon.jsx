@@ -10,9 +10,9 @@ export default function MarkerIcon({ recommended }) {
       }
     >
       {recommended ? (
-        <Star className="w-6 h-6 text-green-700 drop-shadow" />
+        <Star className="w-5 h-5 text-green-700 drop-shadow" />
       ) : (
-        <MapPin className="w-6 h-6 text-gray-500" />
+        <MapPin className="w-5 h-5 text-gray-500" />
       )}
     </span>
   );

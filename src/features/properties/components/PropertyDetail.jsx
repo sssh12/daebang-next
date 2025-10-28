@@ -71,7 +71,7 @@ export default function PropertyDetail({ property, onClose }) {
                       <span
                         key={idx}
                         className={`inline-block w-2 h-2 rounded-full ${
-                          idx === imgIdx ? "bg-main" : "bg-gray-300"
+                          idx === imgIdx ? "bg-green-900" : "bg-gray-300"
                         }`}
                       />
                     ))}
@@ -85,7 +85,7 @@ export default function PropertyDetail({ property, onClose }) {
         </div>
         <div className="p-4 space-y-2">
           <div className="font-bold text-xl">{property.title}</div>
-          <div className="text-main font-semibold">
+          <div className="text-green-900 font-semibold">
             {property.price_type} {property.price?.toLocaleString()}만원
             {property.deposit
               ? ` / 보증금 ${property.deposit.toLocaleString()}만원`
@@ -140,7 +140,7 @@ export default function PropertyDetail({ property, onClose }) {
       <div className="p-4 border-t flex gap-2">
         <button
           onClick={openModal}
-          className="flex-1 font-semibold bg-accent hover:bg-main text-white py-2 rounded active:scale-98 transition cursor-pointer"
+          className="flex-1 font-semibold bg-green-600 hover:bg-green-900 text-white py-2 rounded active:scale-98 transition cursor-pointer"
         >
           문의하기
         </button>

@@ -69,7 +69,7 @@ export default function InquiryModal({ property, onClose }) {
           <X size={24} />
         </button>
 
-        <h2 className="text-xl font-bold mb-6 text-center text-main">
+        <h2 className="text-xl font-bold mb-6 text-center text-green-900">
           문의하기
         </h2>
 
@@ -79,7 +79,7 @@ export default function InquiryModal({ property, onClose }) {
               궁금한 점을 중개사에게 직접 문의해보세요.
             </p>
             <div className="border border-gray-200 rounded-lg p-4">
-              <h3 className="text-lg font-semibold mb-3 text-accent flex items-center">
+              <h3 className="text-lg font-semibold mb-3 text-green-600 flex items-center">
                 <Phone size={20} className="mr-2" /> 전화 문의
               </h3>
               <div className="text-sm space-y-1 mb-4">
@@ -98,7 +98,7 @@ export default function InquiryModal({ property, onClose }) {
             </div>
 
             <div className="border border-gray-200 rounded-lg p-4">
-              <h3 className="text-lg font-semibold mb-3 text-accent flex items-center">
+              <h3 className="text-lg font-semibold mb-3 text-green-600 flex items-center">
                 <MessageSquare size={20} className="mr-2" /> 문자 문의
               </h3>
               <p className="text-sm text-gray-600 mb-4">
@@ -123,7 +123,7 @@ export default function InquiryModal({ property, onClose }) {
               문의하시려면 회원가입 혹은 로그인이 필요합니다.
             </p>
             <Link href="/login">
-              <button className="w-full bg-accent text-white py-2 px-4 rounded font-semibold hover:bg-main transition active:scale-98 cursor-pointer">
+              <button className="w-full bg-green-text-green-600 text-white py-2 px-4 rounded font-semibold hover:bg-green-900 transition active:scale-98 cursor-pointer">
                 로그인
               </button>
             </Link>

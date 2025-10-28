@@ -4,7 +4,7 @@ export default function HeroSection() {
   return (
     <section className="bg-gray-100 drop-shadow-xl">
       <div className="max-w-7xl mx-auto py-16 md:py-24 px-4 sm:px-8 text-center">
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-text tracking-tight">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-green-900 tracking-tight">
           대학생을 위한 똑똑한 방 구하기
         </h1>
         <p className="mt-6 max-w-2xl mx-auto text-gray-600 sm:text-lg">
@@ -13,7 +13,7 @@ export default function HeroSection() {
         </p>
         <div className="mt-8">
           <Link href="/signup">
-            <button className="cursor-pointer bg-accent text-white px-6 py-3 sm:px-8 sm:py-3 rounded  sm:text-lg font-semibold hover:bg-main transition hover:scale-120 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-95">
+            <button className="cursor-pointer bg-green-600 text-white px-6 py-3 sm:px-8 sm:py-3 rounded  sm:text-lg font-semibold hover:bg-green-900 transition hover:scale-120 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-95">
               회원가입하고 시작하기
             </button>
           </Link>

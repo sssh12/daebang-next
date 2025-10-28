@@ -4,13 +4,13 @@ export default function PrivacyPage() {
   return (
     <div className="min-h-screen py-10 px-4">
       <div className="max-w-4xl mx-auto bg-white rounded shadow-xl overflow-hidden">
-        <div className="bg-gradient-to-r from-main to-accent text-white text-center px-10 py-10">
+        <div className="bg-gradient-to-r from-green-900 to-green-600 text-white text-center px-10 py-10">
           <h1 className="text-3xl font-bold mb-2">개인정보 처리방침</h1>
           <p className="text-sm opacity-90">최종 업데이트: 2025년 7월 11일</p>
         </div>
         <div className="px-8 py-10 leading-relaxed text-justify">
           <section className="mb-10">
-            <h2 className="text-2xl font-semibold text-main border-b-2 border-accent pb-2 mb-4">
+            <h2 className="text-2xl font-semibold text-green-900 border-b-2 border-green-600 pb-2 mb-4">
               1. 개인정보 수집 및 이용목적
             </h2>
             <p className="mb-4 text-md">
@@ -27,7 +27,7 @@ export default function PrivacyPage() {
             </ul>
           </section>
           <section className="mb-10">
-            <h2 className="text-2xl font-semibold text-main border-b-2 border-accent pb-2 mb-4">
+            <h2 className="text-2xl font-semibold text-green-900 border-b-2 border-green-600 pb-2 mb-4">
               2. 수집하는 개인정보의 항목
             </h2>
             <p className="mb-4 text-md">
@@ -35,20 +35,20 @@ export default function PrivacyPage() {
               개인정보를 수집하고 있습니다.
             </p>
             <div className="space-y-4">
-              <div className="bg-blue-50 border border-accent rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-accent mb-2">
+              <div className="bg-blue-50 border border-green-600 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-green-600 mb-2">
                   필수정보
                 </h3>
                 <p>이름, 이메일 주소, 비밀번호</p>
               </div>
-              <div className="bg-blue-50 border border-accent rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-accent mb-2">
+              <div className="bg-blue-50 border border-green-600 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-green-600 mb-2">
                   선택정보
                 </h3>
                 <p>휴대폰 번호, 주소, 관심 지역</p>
               </div>
-              <div className="bg-blue-50 border border-accent rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-accent mb-2">
+              <div className="bg-blue-50 border border-green-600 rounded-lg p-4">
+                <h3 className="text-lg font-semibold text-green-600 mb-2">
                   자동 수집정보
                 </h3>
                 <p>IP주소, 쿠키, 방문일시, 서비스 이용 기록, 불량 이용 기록</p>
@@ -57,7 +57,7 @@ export default function PrivacyPage() {
           </section>
 
           <section className="mb-10">
-            <h2 className="text-2xl font-semibold text-main border-b-2 border-accent pb-2 mb-4">
+            <h2 className="text-2xl font-semibold text-green-900 border-b-2 border-green-600 pb-2 mb-4">
               3. 개인정보의 보유 및 이용기간
             </h2>
             <p className="mb-4">
@@ -66,20 +66,21 @@ export default function PrivacyPage() {
             </p>
             <ul className="list-disc list-inside space-y-1">
               <li>
-                <strong className="text-main">회원정보:</strong> 회원 탈퇴
+                <strong className="text-green-900">회원정보:</strong> 회원 탈퇴
                 시까지 (단, 관계법령에 따라 보존 필요시 해당 기간)
               </li>
               <li>
-                <strong className="text-main">서비스 이용기록:</strong> 3년
+                <strong className="text-green-900">서비스 이용기록:</strong> 3년
               </li>
               <li>
-                <strong className="text-main">문의 및 상담 기록:</strong> 3년
+                <strong className="text-green-900">문의 및 상담 기록:</strong>{" "}
+                3년
               </li>
             </ul>
           </section>
 
           <section className="mb-10">
-            <h2 className="text-2xl font-semibold text-main border-b-2 border-accent pb-2 mb-4">
+            <h2 className="text-2xl font-semibold text-green-900 border-b-2 border-green-600 pb-2 mb-4">
               4. 개인정보의 제3자 제공
             </h2>
             <p className="mb-4">
@@ -102,42 +103,43 @@ export default function PrivacyPage() {
           </section>
 
           <section className="mb-10">
-            <h2 className="text-2xl font-semibold text-main border-b-2 border-accent pb-2 mb-4">
+            <h2 className="text-2xl font-semibold text-green-900 border-b-2 border-green-600 pb-2 mb-4">
               5. 개인정보 처리 위탁
             </h2>
             <p className="mb-4">
               대방은 원활한 개인정보 업무처리를 위하여 다음과 같이 개인정보
               처리업무를 위탁하고 있습니다.
             </p>
-            <div className="bg-blue-50 border border-accent rounded-lg p-4 mb-4">
-              <h3 className="text-lg font-semibold text-accent mb-2">
+            <div className="bg-blue-50 border border-green-600 rounded-lg p-4 mb-4">
+              <h3 className="text-lg font-semibold text-green-600 mb-2">
                 웹 서비스 배포 및 운영
               </h3>
               <p>
-                <strong className="text-accent">수탁업체:</strong> Vercel, Inc.
-              </p>
-              <p>
-                <strong className="text-accent">위탁업무:</strong> 웹 서비스
-                배포 및 운영 인프라 제공
-              </p>
-            </div>
-            <div className="bg-blue-50 border border-accent rounded-lg p-4 mb-4">
-              <h3 className="text-lg font-semibold text-accent mb-2">
-                데이터베이스 및 콘텐츠 저장
-              </h3>
-              <p>
-                <strong className="text-accent">수탁업체:</strong> Supabase,
+                <strong className="text-green-600">수탁업체:</strong> Vercel,
                 Inc.
               </p>
               <p>
-                <strong className="text-accent">위탁업무:</strong> 사용자
+                <strong className="text-green-600">위탁업무:</strong> 웹 서비스
+                배포 및 운영 인프라 제공
+              </p>
+            </div>
+            <div className="bg-blue-50 border border-green-600 rounded-lg p-4 mb-4">
+              <h3 className="text-lg font-semibold text-green-600 mb-2">
+                데이터베이스 및 콘텐츠 저장
+              </h3>
+              <p>
+                <strong className="text-green-600">수탁업체:</strong> Supabase,
+                Inc.
+              </p>
+              <p>
+                <strong className="text-green-600">위탁업무:</strong> 사용자
                 데이터베이스 관리, 인증 및 콘텐츠 저장(Supabase Storage)
               </p>
             </div>
           </section>
 
           <section className="mb-10">
-            <h2 className="text-2xl font-semibold text-main border-b-2 border-accent pb-2 mb-4">
+            <h2 className="text-2xl font-semibold text-green-900 border-b-2 border-green-600 pb-2 mb-4">
               6. 정보주체의 권리·의무 및 행사방법
             </h2>
             <p className="mb-4">
@@ -157,7 +159,7 @@ export default function PrivacyPage() {
           </section>
 
           <section className="mb-10">
-            <h2 className="text-2xl font-semibold text-main border-b-2 border-accent pb-2 mb-4">
+            <h2 className="text-2xl font-semibold text-green-900 border-b-2 border-green-600 pb-2 mb-4">
               7. 개인정보보호책임자
             </h2>
             <p className="mb-4">
@@ -165,15 +167,15 @@ export default function PrivacyPage() {
               처리와 관련한 정보주체의 불만처리 및 피해구제 등을 위하여 아래와
               같이 개인정보보호책임자를 지정하고 있습니다.
             </p>
-            <div className="bg-blue-50 border border-accent rounded-lg p-4">
-              <h3 className="text-lg font-semibold text-accent mb-2">
+            <div className="bg-blue-50 border border-green-600 rounded-lg p-4">
+              <h3 className="text-lg font-semibold text-green-600 mb-2">
                 개인정보보호책임자
               </h3>
               <p>
-                <strong className="text-accent">성명:</strong> 팀 대방
+                <strong className="text-green-600">성명:</strong> 팀 대방
               </p>
               <p>
-                <strong className="text-accent">연락처:</strong>{" "}
+                <strong className="text-green-600">연락처:</strong>{" "}
                 <Link
                   href="/contact"
                   className="text-blue-500 font-semibold hover:underline"
@@ -184,7 +186,7 @@ export default function PrivacyPage() {
             </div>
           </section>
           <section className="mb-10">
-            <h2 className="text-2xl font-semibold text-main border-b-2 border-accent pb-2 mb-4">
+            <h2 className="text-2xl font-semibold text-green-900 border-b-2 border-green-600 pb-2 mb-4">
               8. 개인정보의 안전성 확보 조치
             </h2>
             <p className="mb-4">
@@ -200,7 +202,7 @@ export default function PrivacyPage() {
             </ul>
           </section>
           <section>
-            <h2 className="text-2xl font-semibold text-main border-b-2 border-accent pb-2 mb-4">
+            <h2 className="text-2xl font-semibold text-green-900 border-b-2 border-green-600 pb-2 mb-4">
               9. 개인정보보호정책의 변경
             </h2>
             <p>

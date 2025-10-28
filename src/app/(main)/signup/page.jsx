@@ -90,7 +90,7 @@ export default function SignupPage() {
     <div className="flex min-h-screen items-center justify-center bg-gray-50 py-10 px-4">
       <div className="w-full max-w-xl p-8 bg-white rounded shadow ">
         <h1 className="text-2xl font-bold mb-6 space-y-4">회원가입</h1>
-        <p className="text-gray-600 mb-10  border-b border-accent pb-4 text-sm">
+        <p className="text-gray-600 mb-10  border-b border-green-600 pb-4 text-sm">
           서비스 이용을 위해 아래 정보를 입력해주세요.
         </p>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -209,7 +209,7 @@ export default function SignupPage() {
 
           <button
             type="submit"
-            className="w-full bg-accent text-white py-2 rounded font-semibold hover:bg-main transition active:scale-98 cursor-pointer"
+            className="w-full bg-green-600 text-white py-2 rounded font-semibold hover:bg-green-900 transition active:scale-98 cursor-pointer"
             disabled={isSubmitting}
           >
             {isSubmitting ? "가입 중..." : "회원가입"}

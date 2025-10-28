@@ -13,14 +13,14 @@ export default function Header() {
           className="object-contain h-12 w-auto"
           priority
         />
-        <span className="text-main text-xl font-mono font-extrabold border-b-2 border-main pb-1">
+        <span className="text-green-900 text-xl font-mono font-extrabold border-b-2 border-green-900 pb-1">
           Agent
         </span>
       </Link>
       <div className="flex justify-between items-center">
         <Link href="/agent/login">
           <button
-            className="hidden md:block border bg-white border-accent text-black px-5 py-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="hidden md:block border bg-white border-green-600 text-black px-5 py-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={true}
           >
             공인 중개사 로그인

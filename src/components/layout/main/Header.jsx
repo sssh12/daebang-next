@@ -141,7 +141,9 @@ export default function Header({ initialUserName, initialSchoolName }) {
                 <Link
                   href={link.href}
                   className={`p-3 cursor-pointer rounded hover:bg-gray-100 transition ${
-                    pathName === link.href ? "text-accent font-semibold" : ""
+                    pathName === link.href
+                      ? "text-green-600 font-semibold transition-none"
+                      : ""
                   }`}
                 >
                   {link.label}
@@ -155,12 +157,12 @@ export default function Header({ initialUserName, initialSchoolName }) {
             <div className="hidden md:flex flex-col items-end mr-2 hover:bg-gray-100 p-2 rounded transition cursor-pointer">
               <span className="font-semibold">{userName || ""}님</span>
               {schoolName && (
-                <span className="text-main text-sm">{schoolName}</span>
+                <span className="text-green-900 text-sm">{schoolName}</span>
               )}
             </div>
             <button
               onClick={handleLogout}
-              className="cursor-pointer hidden md:block border border-accent text-black px-5 py-1.5 hover:bg-gray-100 active:scale-98 transition "
+              className="cursor-pointer hidden md:block border border-green-600 text-black px-5 py-1.5 hover:bg-gray-100 active:scale-98 transition"
             >
               로그아웃
             </button>
@@ -168,14 +170,14 @@ export default function Header({ initialUserName, initialSchoolName }) {
         ) : (
           <div className="flex justify-between items-center">
             <Link href="/login">
-              <button className="cursor-pointer hidden md:block border border-accent text-black px-5 py-1.5 hover:bg-gray-100 active:scale-98 transition ">
+              <button className="cursor-pointer hidden md:block border border-green-600 text-black px-5 py-1.5 hover:bg-gray-100 active:scale-98 transition">
                 로그인
                 <span className="text-md text-gray-300 mx-2">|</span>
                 회원가입
               </button>
             </Link>
             <Link href="/agent" target="_blank" rel="noopener noreferrer">
-              <button className="cursor-pointer ml-2 hidden md:block border border-accent text-black px-5 py-1.5 hover:bg-gray-100 active:scale-98 transition ">
+              <button className="cursor-pointer ml-2 hidden md:block border border-green-600 text-black px-5 py-1.5 hover:bg-gray-100 active:scale-98 transition">
                 중개사 회원가입
               </button>
             </Link>

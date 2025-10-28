@@ -8,6 +8,7 @@
 - Zod
 - Lucide-react
 - Zustand
+- Shadcn UI
 
 ## 백엔드
 

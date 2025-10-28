@@ -4,14 +4,14 @@ export default function TermsPage() {
   return (
     <div className="min-h-screen py-10 px-4">
       <div className="max-w-4xl mx-auto bg-white rounded shadow-xl overflow-hidden">
-        <div className="bg-gradient-to-r from-main to-accent text-white text-center px-8 py-10">
+        <div className="bg-gradient-to-r from-green-900 to-green-600 text-white text-center px-8 py-10">
           <h1 className="text-3xl font-bold mb-2">이용약관</h1>
           <p className="text-sm opacity-90">최종 업데이트: 2025년 7월 11일</p>
         </div>
 
         <div className="px-8 py-10 leading-relaxed space-y-10 text-justify">
           <section>
-            <h2 className="text-2xl font-semibold text-main border-b-2 border-accent pb-2 mb-4">
+            <h2 className="text-2xl font-semibold text-green-900 border-b-2 border-green-600 pb-2 mb-4">
               제1조 (목적)
             </h2>
             <p className="text-md">
@@ -21,7 +21,7 @@ export default function TermsPage() {
             </p>
           </section>
           <section>
-            <h2 className="text-2xl font-semibold text-main border-b-2 border-accent pb-2 mb-4">
+            <h2 className="text-2xl font-semibold text-green-900 border-b-2 border-green-600 pb-2 mb-4">
               제2조 (용어의 정의)
             </h2>
             <p className="text-md">
@@ -29,23 +29,23 @@ export default function TermsPage() {
             </p>
             <ul className="list-disc list-inside mt-3 space-y-2">
               <li>
-                <strong className="text-accent">"서비스"</strong>라 함은
+                <strong className="text-green-600">"서비스"</strong>라 함은
                 구현되는 단말기(PC, 휴대폰, PDA 등의 각종 유무선 장치를 포함)와
                 상관없이 "이용자"가 이용할 수 있는 대방 관련 제반 서비스를
                 의미합니다.
               </li>
               <li>
-                <strong className="text-accent">"이용자"</strong>라 함은 당
+                <strong className="text-green-600">"이용자"</strong>라 함은 당
                 사이트에 접속하여 이 약관에 따라 당 사이트가 제공하는 서비스를
                 받는 회원 및 비회원을 말합니다.
               </li>
               <li>
-                <strong className="text-accent">"회원"</strong>이라 함은
+                <strong className="text-green-600">"회원"</strong>이라 함은
                 서비스를 이용하기 위하여 당 사이트에 개인정보를 제공하여
                 아이디(ID)와 비밀번호를 부여받은 자를 말합니다.
               </li>
               <li>
-                <strong className="text-accent">"비회원"</strong>이라 함은
+                <strong className="text-green-600">"비회원"</strong>이라 함은
                 회원에 가입하지 않고 "회사"가 제공하는 서비스를 이용하는 자를
                 말합니다.
               </li>
@@ -151,7 +151,7 @@ export default function TermsPage() {
             },
           ].map((section, idx) => (
             <section key={idx}>
-              <h2 className="text-2xl font-semibold text-main border-b-2 border-accent pb-2 mb-4">
+              <h2 className="text-2xl font-semibold text-green-900 border-b-2 border-green-600 pb-2 mb-4">
                 {section.title}
               </h2>
               <ol className="list-decimal list-inside space-y-2">

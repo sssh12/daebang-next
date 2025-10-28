@@ -16,11 +16,11 @@ export default function SidebarHeader({
         className="p-4 flex justify-between items-center space-x-2 flex-shrink-0"
       >
         <input
-          className="w-full border border-gray-400 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+          className="w-full border border-gray-400 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
           placeholder="검색어 입력(구현 예정)"
         />
         <button
-          className="w-1/4 h-full bg-accent hover:bg-main text-white px-2 py-1 rounded font-semibold transition cursor-pointer active:scale-98"
+          className="w-1/4 h-full bg-green-600 hover:bg-green-900 text-white px-2 py-1 rounded font-semibold transition cursor-pointer active:scale-98"
           onClick={onFilterButton}
         >
           <div className="flex justify-between items-center">

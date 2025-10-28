@@ -313,7 +313,7 @@ export default function PropertyAddPage() {
           )}
           <button
             type="submit"
-            className="w-full bg-main text-white py-2 rounded hover:bg-accent transition-colors cursor-pointer"
+            className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-900 transition-colors cursor-pointer"
             disabled={loading}
           >
             {loading ? "등록 중..." : "등록"}

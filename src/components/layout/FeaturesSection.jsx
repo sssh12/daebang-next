@@ -1,7 +1,7 @@
 const FeatureCard = ({ icon, title, children }) => (
-  <div className="bg-gray-100 p-6 border-3 border-accent rounded-lg shadow-md">
+  <div className="bg-gray-100 p-6 border-3 border-green-600 rounded-lg shadow-md">
     <div className="text-4xl mb-4">{icon}</div>
-    <h3 className="text-xl font-extrabold text-main mb-2">{title}</h3>
+    <h3 className="text-xl font-extrabold text-green-900 mb-2">{title}</h3>
     <p className="text-gray-600">{children}</p>
   </div>
 );
@@ -11,10 +11,10 @@ export default function FeaturesSection() {
     <section className="py-16 md:py-20 px-4 sm:px-8 bg-[#F8FFF8]">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12 transition">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-text">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-green-900">
             이런 경험 있으신가요?
           </h2>
-          <p className="mt-4 text-text sm:text-lg">
+          <p className="mt-4 text-green-900 sm:text-lg">
             대학생을 위한 방 구하기, 이렇게 어려우셨나요?
           </p>
         </div>
@@ -32,10 +32,10 @@ export default function FeaturesSection() {
       </div>
       <div className="max-w-7xl mx-auto mb-12">
         <div className="text-center mt-62 mb-12">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-text">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-green-900">
             대방이 해결해 드립니다!
           </h2>
-          <p className="mt-4 text-text sm:text-lg">
+          <p className="mt-4 text-green-900 sm:text-lg">
             대학생을 위한 최적의 방 구하기 솔루션
           </p>
         </div>

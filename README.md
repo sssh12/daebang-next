@@ -4,7 +4,7 @@
 
 ## 기술 스택
 
-- **프론트엔드**: Next.js (App Router), Tailwind CSS, React Hook Form, Zod, Lucide-react, Zustand
+- **프론트엔드**: Next.js (App Router), Tailwind CSS, React Hook Form, Zod, Lucide-react, Zustand, Shadcn UI
 - **백엔드**: Next.js API Routes
 - **데이터베이스**: Supabase
 - **데이터 접근**: supabase-js
