@@ -1,5 +1,8 @@
-export const DEPOSIT_MAX = 1000;
-export const PRICE_MAX = 100;
+import {
+  FILTER_CONFIG,
+  DEPOSIT_SCALE,
+  MONTHLY_RENT_SCALE,
+} from "@/constants/filterConfig";
 
 export const filterComparators = {
   department: (p, v) =>
@@ -26,13 +29,30 @@ export const filterComparators = {
 };
 
 export function isActiveFilter(key, value) {
-  if (key === "depositRange")
-    return value && !(value[0] === 0 && value[1] === DEPOSIT_MAX);
-  if (key === "priceRange")
-    return value && !(value[0] === 0 && value[1] === PRICE_MAX);
+  if (key === "depositIndex") {
+    return typeof value === "number" && value !== DEPOSIT_SCALE.length - 1;
+  }
+  if (key === "monthlyRentIndex") {
+    return typeof value === "number" && value !== MONTHLY_RENT_SCALE.length - 1;
+  }
+  if (key === "includeMaintenanceFee") {
+    return value === true;
+  }
+  if (key === "roomSizePyeongRange") {
+    const config = FILTER_CONFIG.find((f) => f.key === key);
+    const defaultValue = config?.default || [0, 15];
+    return (
+      value && !(value[0] === defaultValue[0] && value[1] === defaultValue[1])
+    );
+  }
   if (Array.isArray(value)) return value.length > 0;
+
   if (typeof value === "boolean") return value;
-  return (
-    value !== "" && value !== null && value !== undefined && value !== "전체"
-  );
+
+  if (key === "department") return value !== undefined && value !== "";
+
+  const config = FILTER_CONFIG.find((f) => f.key === key);
+  const defaultValue = config?.default;
+
+  return defaultValue === undefined || value !== defaultValue;
 }

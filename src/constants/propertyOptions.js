@@ -1,19 +1,75 @@
-export const ROOM_TYPES = ["원룸", "1.5룸", "투룸 이상"];
-export const PRICE_TYPES = ["월세", "전세", "매매"];
-export const DISTANCE_TYPES = [
-  "도보 10분 내",
-  "자전거 15분 내",
-  "셔틀 정류장 인근",
+// 기본 옵션
+export const TRADE_TYPES = ["전체", "월세", "전세"];
+export const DISTANCE_OPTIONS = [
+  // 학교까지 거리/시간
+  "전체",
+  "5분 이내",
+  "10분 이내",
+  "15분 이내",
+  "20분 이내",
+  "20분 초과",
 ];
 export const NEARBY_FACILITIES = [
-  "스터디 카페",
-  "코인세탁소",
-  "24시 마트",
+  // 주요 편의시설
+  "지하철역",
+  "버스정류장",
+  "편의점",
+  "마트",
+  "세탁소",
+  "카페",
+  "식당",
+  "병원/약국",
+  "공원",
+  "스터디카페",
   "헬스장",
 ];
-export const SAFETY_OPTIONS = ["여성 전용", "24시 경비/CCTV", "대로변 위치"];
-export const LIVING_OPTIONS = ["벌레 없는 집", "방음 우수", "남향/채광"];
-export const MAINTENANCE_INCL = ["인터넷", "수도세", "가스비", "TV"];
-export const LOAN_TYPES = ["불가", "버팀목 가능", "중기청 가능"];
-export const ROOM_OPTIONS = ["침대", "책상/의자", "전자레인지", "에어컨"];
-export const CONTRACT_PERIODS = ["1년 이하 단기", "2년"];
+export const ROOM_TYPES = ["전체", "원룸", "투룸", "쓰리룸 이상"];
+export const FLOOR_TYPES = ["전체", "반지층", "지상층", "옥탑"];
+
+// 시설 옵션
+export const ROOM_OPTIONS = [
+  "침대",
+  "책상",
+  "의자",
+  "옷장",
+  "신발장",
+  "냉장고",
+  "세탁기",
+  "에어컨",
+  "전자레인지",
+  "인덕션/가스레인지",
+  "TV",
+  "인터넷",
+  "wifi",
+  "도어락",
+  "비데",
+];
+export const SECURITY_OPTIONS = [
+  "CCTV",
+  "현관보안",
+  "경비원",
+  "비디오폰",
+  "자체경비",
+  "방범창",
+];
+
+export const BUILDING_AGE_OPTIONS = [
+  "전체",
+  "5년 이내",
+  "10년 이내",
+  "15년 이내",
+  "15년 이상",
+];
+
+// 상세 옵션
+export const DIRECTIONS = [
+  "동",
+  "서",
+  "남",
+  "북",
+  "남동",
+  "남서",
+  "북동",
+  "북서",
+];
+export const AVAILABILITY_OPTIONS = ["즉시 입주 가능", "협의 가능"];
