@@ -5,6 +5,8 @@ import { createClient } from "@/lib/supabase/client";
 import {
   FILTER_CONFIG,
   getDefaultFilterValues,
+  DEPOSIT_SCALE,
+  MONTHLY_RENT_SCALE,
 } from "@/constants/filterConfig";
 import { isActiveFilter } from "../utils/filterUtils";
 import { format } from "date-fns";
@@ -25,14 +27,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
@@ -40,7 +40,6 @@ import {
 } from "@/components/ui/popover";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
-// 평 <-> 제곱미터 변환 함수
 const PYEONG_TO_SQM = 3.305785;
 const sqmToPyeong = (sqm) => Math.round(sqm / PYEONG_TO_SQM);
 const pyeongToSqm = (pyeong) => Math.round(pyeong * PYEONG_TO_SQM);
@@ -86,7 +85,7 @@ export default function FilterPanel({ visible, onApply, onClose }) {
   }, [supabase]);
 
   const handleChange = (key, value) => {
-    if (key === "department" && value === "") {
+    if (key === "department" && (value === "" || value === undefined)) {
       setFilterState((prev) => ({ ...prev, [key]: undefined }));
     } else {
       setFilterState((prev) => ({ ...prev, [key]: value }));
@@ -108,28 +107,13 @@ export default function FilterPanel({ visible, onApply, onClose }) {
     handleChange(key, valueArray);
   };
 
-  const handleRangeInputChange = (key, index, event) => {
-    const newValue = Number(event.target.value);
-    const currentValue = filterState[key];
-    let newRange = [...currentValue];
-    const config = FILTER_CONFIG.find((f) => f.key === key);
-    const min = config?.min ?? 0;
-    const max = config?.max ?? Infinity;
-
-    if (index === 0) {
-      newRange[0] = Math.max(min, Math.min(newValue, currentValue[1]));
-    } else {
-      newRange[1] = Math.min(max, Math.max(newValue, currentValue[0]));
-    }
-    handleChange(key, newRange);
-  };
-
   const handleAvailabilityChange = (key, itemValue, checked) => {
     setFilterState((prev) => {
       const currentValues = prev[key] || [];
       let newValues;
       if (checked === true) {
         newValues = [...currentValues, itemValue];
+
         if (key === "availabilityOptions") {
           handleChange("moveInDate", null);
         }
@@ -154,7 +138,8 @@ export default function FilterPanel({ visible, onApply, onClose }) {
         pyeongToSqm(finalFilters.roomSizePyeongRange[1]),
       ];
     }
-    // TODO: buildingAge, distanceMinutes 값 변환 로직 추가
+    // TODO: 사용승인일(buildingAge) 값 변환 로직 추가 (예: "5년 이내" -> year >= currentYear - 5)
+    // TODO: 학교까지 거리(distanceMinutes) 값 변환 로직 추가 (예: "10분 이내" -> minutes <= 10)
 
     onApply?.(finalFilters);
   };
@@ -174,7 +159,7 @@ export default function FilterPanel({ visible, onApply, onClose }) {
     <div
       className={`
         absolute top-16 w-full h-[calc(100%-64px)] bg-white shadow-lg z-10
-        transition-all duration-200 ease-in-out flex flex-col min-w-[280px]
+        transition-all duration-200 ease-in-out flex flex-col min-w-[280px] overflow-hidden
         ${
           visible
             ? "opacity-100 pointer-events-auto translate-y-0"
@@ -182,240 +167,299 @@ export default function FilterPanel({ visible, onApply, onClose }) {
         }
       `}
     >
-      <Accordion
-        type="multiple"
-        defaultValue={["basic"]}
-        className="flex-1 overflow-y-auto px-4"
-      >
-        {Object.entries(groupedFilters).map(([groupKey, configs]) => (
-          <AccordionItem value={groupKey} key={groupKey}>
-            <AccordionTrigger className="text-base font-semibold hover:no-underline">
-              {" "}
-              {GROUP_LABELS[groupKey] || "기타"}
-            </AccordionTrigger>
-            <AccordionContent>
-              <div className="space-y-4 pt-2 pb-4">
-                {" "}
-                {configs.map((f) => (
-                  <div key={f.key} className="space-y-2">
-                    {" "}
-                    <Label
-                      htmlFor={f.key}
-                      className="font-medium text-sm text-gray-800"
-                    >
-                      {f.label}
-                    </Label>{" "}
-                    {f.type === "select" && f.key === "department" && (
-                      <Select
-                        value={
-                          filterState[f.key]
-                            ? String(filterState[f.key])
-                            : undefined
-                        }
-                        onValueChange={(value) => {
-                          const finalValue = value ? Number(value) : undefined;
-                          handleChange(f.key, finalValue);
-                        }}
+      <div className="flex-1 overflow-y-auto min-h-0 px-4 pt-2">
+        <Accordion type="multiple" defaultValue={["basic"]} className="w-full">
+          {Object.entries(groupedFilters).map(([groupKey, configs]) => (
+            <AccordionItem value={groupKey} key={groupKey} className="border-b">
+              <AccordionTrigger className="text-base font-semibold hover:no-underline py-3">
+                {GROUP_LABELS[groupKey] || "기타"}
+              </AccordionTrigger>
+              <AccordionContent className="pb-4 pt-2">
+                <div className="space-y-5">
+                  {configs.map((f) => (
+                    <div key={f.key} className="space-y-2.5">
+                      <Label
+                        htmlFor={f.key}
+                        className="font-medium text-sm text-gray-800"
                       >
-                        <SelectTrigger id={f.key} className="h-10 text-sm">
-                          {" "}
-                          <SelectValue placeholder={f.placeholder || f.label} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {departments.map((opt) => (
-                            <SelectItem key={opt.id} value={String(opt.id)}>
-                              {opt.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
-                    {f.type === "radio" &&
-                      [
-                        "tradeType",
-                        "roomType",
-                        "distanceMinutes",
-                        "buildingAge",
-                      ].includes(f.key) && (
-                        <ToggleGroup
-                          type="single"
-                          id={f.key}
-                          value={filterState[f.key]}
+                        {f.label}
+                      </Label>
+
+                      {f.type === "select" && f.key === "department" && (
+                        <Select
+                          value={
+                            filterState[f.key]
+                              ? String(filterState[f.key])
+                              : undefined
+                          }
                           onValueChange={(value) => {
-                            if (value) handleChange(f.key, value);
+                            const finalValue = value
+                              ? Number(value)
+                              : undefined;
+                            handleChange(f.key, finalValue);
                           }}
-                          className="flex flex-wrap justify-start gap-2"
                         >
-                          {f.options.map((opt) => (
-                            <ToggleGroupItem
-                              key={opt}
-                              value={opt}
-                              variant="outline"
-                              size="sm"
-                              className="text-sm rounded-md data-[state=on]:bg-green-600 data-[state=on]:text-white"
-                            >
-                              {opt}
-                            </ToggleGroupItem>
-                          ))}
-                        </ToggleGroup>
+                          <SelectTrigger id={f.key} className="h-10 text-sm">
+                            <SelectValue
+                              placeholder={f.placeholder || f.label}
+                            />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {departments.map((opt) => (
+                              <SelectItem key={opt.id} value={String(opt.id)}>
+                                {opt.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       )}
-                    {f.type === "checkbox" &&
-                      Array.isArray(f.default) &&
-                      [
-                        "nearbyFacilities",
-                        "floorType",
-                        "roomOptions",
-                        "securityOptions",
-                        "direction",
-                      ].includes(f.key) && (
-                        <div id={f.key} className="flex flex-wrap gap-2">
-                          {" "}
-                          {f.options.map((opt) => (
-                            <div key={opt}>
-                              <Checkbox
-                                id={`${f.key}-${opt}`}
-                                checked={filterState[f.key]?.includes(opt)}
-                                onCheckedChange={(checked) =>
-                                  handleMultiCheckboxChange(f.key, opt, checked)
-                                }
-                                className="sr-only"
-                              />
-                              <Label
-                                htmlFor={`${f.key}-${opt}`}
-                                className={cn(
-                                  "cursor-pointer rounded-md border px-3 py-1.5 text-sm transition-colors",
-                                  filterState[f.key]?.includes(opt)
-                                    ? "border-green-600 bg-green-600 text-white hover:bg-green-700"
-                                    : "border-gray-300 bg-gray-50 text-gray-700 hover:bg-gray-100"
-                                )}
+
+                      {/* --- ToggleGroup (Single: 거래유형, 방종류, 학교거리, 사용승인일) --- */}
+                      {f.type === "radio" &&
+                        [
+                          "tradeType",
+                          "roomType",
+                          "distanceMinutes",
+                          "buildingAge",
+                        ].includes(f.key) && (
+                          <ToggleGroup
+                            type="single"
+                            id={f.key}
+                            value={filterState[f.key]}
+                            onValueChange={(value) => {
+                              if (value) handleChange(f.key, value);
+                            }}
+                            className="flex flex-wrap justify-start gap-2"
+                          >
+                            {f.options.map((opt) => (
+                              <ToggleGroupItem
+                                key={opt}
+                                value={opt}
+                                variant="outline"
+                                size="sm"
+                                className="text-sm rounded-md data-[state=on]:bg-green-600 data-[state=on]:text-white"
                               >
                                 {opt}
-                              </Label>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    {f.type === "slider" && f.key === "roomSizePyeongRange" && (
-                      <div className="pt-1 space-y-3">
-                        <div className="flex gap-2 items-center">
-                          <span className="text-sm font-medium w-16 text-center">
-                            {filterState[f.key][0]}
-                            {f.unit}
-                          </span>
+                              </ToggleGroupItem>
+                            ))}
+                          </ToggleGroup>
+                        )}
+
+                      {/* --- Checkbox (Multiple: 편의시설, 층수, 옵션, 보안, 방향) --- */}
+                      {f.type === "checkbox" &&
+                        Array.isArray(f.default) &&
+                        [
+                          "nearbyFacilities",
+                          "floorType",
+                          "roomOptions",
+                          "securityOptions",
+                          "direction",
+                        ].includes(f.key) && (
+                          <div id={f.key} className="flex flex-wrap gap-2">
+                            {f.options.map((opt) => (
+                              <div key={opt}>
+                                <Checkbox
+                                  id={`${f.key}-${opt}`}
+                                  checked={filterState[f.key]?.includes(opt)}
+                                  onCheckedChange={(checked) =>
+                                    handleMultiCheckboxChange(
+                                      f.key,
+                                      opt,
+                                      checked
+                                    )
+                                  }
+                                  className="hidden"
+                                />
+                                <Label
+                                  htmlFor={`${f.key}-${opt}`}
+                                  className={cn(
+                                    "cursor-pointer rounded-md border px-3 py-1.5 text-sm transition-colors",
+                                    filterState[f.key]?.includes(opt)
+                                      ? "border-green-600 bg-green-600 text-white hover:bg-green-700"
+                                      : "border-gray-300 bg-gray-50 text-gray-700 hover:bg-gray-100"
+                                  )}
+                                >
+                                  {opt}
+                                </Label>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                      {/* --- Slider (보증금, 월세) --- */}
+                      {f.type === "slider_custom" && f.scale && (
+                        <div className="pt-1 space-y-2">
+                          <div className="text-right text-sm font-semibold text-green-700 pr-1 h-5">
+                            0 ~{" "}
+                            {formatCurrency(
+                              f.scale[filterState[f.key]],
+                              f.unit
+                            )}
+                          </div>
                           <Slider
                             id={f.key}
                             min={f.min}
                             max={f.max}
                             step={f.step}
-                            value={filterState[f.key]}
+                            value={[filterState[f.key]]}
                             onValueChange={(value) =>
-                              handleRangeSliderChange(f.key, value)
+                              handleChange(f.key, value[0])
                             }
-                            className="flex-1 mx-1"
+                            className="w-full mt-1 mb-1"
                           />
-
-                          <span className="text-sm font-medium w-16 text-center">
-                            {filterState[f.key][1]}
-                            {f.max === filterState[f.key][1] ? "+" : ""}
-                            {f.unit}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                    {f.type === "switch" && (
-                      <div className="flex items-center space-x-2">
-                        <Switch
-                          id={f.key}
-                          checked={filterState[f.key]}
-                          onCheckedChange={(checked) =>
-                            handleChange(f.key, checked)
-                          }
-                        />
-                      </div>
-                    )}
-                    {f.type === "datepicker" && (
-                      <div className="space-y-2.5">
-                        <Popover
-                          open={isDatePickerOpen}
-                          onOpenChange={setIsDatePickerOpen}
-                        >
-                          <PopoverTrigger asChild>
-                            <Button
-                              id={f.key}
-                              variant={"outline"}
-                              className={cn(
-                                "w-full justify-start text-left font-normal h-10 text-sm",
-                                !filterState[f.key] && "text-muted-foreground",
-                                filterState[f.availabilityKey]?.length > 0 &&
-                                  "text-muted-foreground opacity-70"
+                          <div className="flex justify-between text-xs text-gray-500 px-1 pt-0.5">
+                            <span>최소</span>
+                            <span>
+                              ~
+                              {formatCurrency(
+                                f.midLabelValue ||
+                                  f.scale[Math.floor(f.scale.length / 2)],
+                                f.unit
                               )}
-                              disabled={
-                                filterState[f.availabilityKey]?.length > 0
-                              }
-                            >
-                              <CalendarIcon className="mr-2 h-4 w-4" />
-                              {filterState[f.key] ? (
-                                format(filterState[f.key], "PPP", {
-                                  locale: ko,
-                                })
-                              ) : (
-                                <span>날짜 선택</span>
-                              )}
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0">
-                            <Calendar
-                              mode="single"
-                              selected={filterState[f.key]}
-                              onSelect={handleDateSelect}
-                              initialFocus
-                              locale={ko}
-                            />
-                          </PopoverContent>
-                        </Popover>
-
-                        <div className="flex flex-wrap gap-x-4 gap-y-2 pt-1">
-                          {" "}
-                          {f.availabilityOptions?.map((opt) => (
-                            <div
-                              key={opt}
-                              className="flex items-center space-x-2"
-                            >
-                              {" "}
+                            </span>
+                            <span>최대</span>
+                          </div>
+                          {f.subKey && f.subType === "checkbox_single" && (
+                            <div className="flex items-center space-x-2 justify-end pt-1">
                               <Checkbox
-                                id={`${f.availabilityKey}-${opt}`}
-                                checked={filterState[
-                                  f.availabilityKey
-                                ]?.includes(opt)}
+                                id={f.subKey}
+                                checked={!!filterState[f.subKey]}
                                 onCheckedChange={(checked) =>
-                                  handleAvailabilityChange(
-                                    f.availabilityKey,
-                                    opt,
-                                    checked
-                                  )
+                                  handleChange(f.subKey, Boolean(checked))
                                 }
                               />
                               <Label
-                                htmlFor={`${f.availabilityKey}-${opt}`}
+                                htmlFor={f.subKey}
                                 className="font-normal text-sm"
                               >
-                                {" "}
-                                {opt}
+                                {f.subLabel}
                               </Label>
                             </div>
-                          ))}
+                          )}
                         </div>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
+                      )}
 
-      <div className="p-4 border-t">
+                      {/* --- 범위 슬라이더 (방 크기 - 평) --- */}
+                      {f.type === "slider" &&
+                        f.key === "roomSizePyeongRange" && (
+                          <div className="pt-1 space-y-3">
+                            <Slider
+                              id={f.key}
+                              min={f.min}
+                              max={f.max}
+                              step={f.step}
+                              value={filterState[f.key]}
+                              onValueChange={(value) =>
+                                handleRangeSliderChange(f.key, value)
+                              }
+                              className="w-full"
+                            />
+                            <div className="flex justify-between text-sm text-gray-600 mt-1 px-1">
+                              <span>
+                                {filterState[f.key][0]}
+                                {f.unit}
+                              </span>
+                              <span>
+                                {filterState[f.key][1]}
+                                {f.max === filterState[f.key][1] ? "+" : ""}
+                                {f.unit}
+                              </span>
+                            </div>
+                          </div>
+                        )}
+
+                      {f.type === "switch" && (
+                        <div className="flex items-center space-x-2">
+                          <Switch
+                            id={f.key}
+                            checked={filterState[f.key]}
+                            onCheckedChange={(checked) =>
+                              handleChange(f.key, checked)
+                            }
+                          />
+                        </div>
+                      )}
+
+                      {f.type === "datepicker" && (
+                        <div className="space-y-2.5">
+                          <Popover
+                            open={isDatePickerOpen}
+                            onOpenChange={setIsDatePickerOpen}
+                          >
+                            <PopoverTrigger asChild>
+                              <Button
+                                id={f.key}
+                                variant={"outline"}
+                                className={cn(
+                                  "w-full justify-start text-left font-normal h-10 text-sm",
+                                  !filterState[f.key] &&
+                                    "text-muted-foreground",
+                                  filterState[f.availabilityKey]?.length > 0 &&
+                                    "text-muted-foreground opacity-70"
+                                )}
+                                disabled={
+                                  filterState[f.availabilityKey]?.length > 0
+                                }
+                              >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {filterState[f.key] ? (
+                                  format(filterState[f.key], "PPP", {
+                                    locale: ko,
+                                  })
+                                ) : (
+                                  <span>날짜 선택</span>
+                                )}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0">
+                              <Calendar
+                                mode="single"
+                                selected={filterState[f.key]}
+                                onSelect={handleDateSelect}
+                                initialFocus
+                                locale={ko}
+                              />
+                            </PopoverContent>
+                          </Popover>
+                          <div className="flex flex-wrap gap-x-4 gap-y-2 pt-1">
+                            {f.availabilityOptions?.map((opt) => (
+                              <div
+                                key={opt}
+                                className="flex items-center space-x-2"
+                              >
+                                <Checkbox
+                                  id={`${f.availabilityKey}-${opt}`}
+                                  checked={filterState[
+                                    f.availabilityKey
+                                  ]?.includes(opt)}
+                                  onCheckedChange={(checked) =>
+                                    handleAvailabilityChange(
+                                      f.availabilityKey,
+                                      opt,
+                                      checked
+                                    )
+                                  }
+                                />
+                                <Label
+                                  htmlFor={`${f.availabilityKey}-${opt}`}
+                                  className="font-normal text-sm"
+                                >
+                                  {opt}
+                                </Label>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </div>{" "}
+      <div className="p-4 border-t flex-shrink-0">
         <Button
           className="w-full h-10 text-base"
           onClick={handleApply}

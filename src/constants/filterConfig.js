@@ -163,7 +163,7 @@ export const FILTER_CONFIG = [
     label: "층수",
     type: "checkbox",
     options: FLOOR_TYPES,
-    default: [],
+    default: ["1층", "2층 이상", "반지하", "옥탑"],
   },
   {
     group: "basic",
