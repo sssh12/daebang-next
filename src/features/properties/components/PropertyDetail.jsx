@@ -6,8 +6,6 @@ import {
   Undo2,
   Heart,
   Share2,
-  Phone,
-  MessageSquare,
   MapPin,
   Building,
   Square,
@@ -273,13 +271,12 @@ export default function PropertyDetail({ property, onClose }) {
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 p-4 border-t bg-white flex gap-3 z-10 lg:relative lg:z-auto">
+      <div className="p-4 border-t flex gap-2">
         <button
           onClick={openModal}
-          className="flex-1 font-semibold bg-green-600 hover:bg-green-700 text-white py-3 rounded-md active:scale-98 transition duration-150 ease-in-out flex items-center justify-center space-x-2"
+          className="bg-green-600 text-white cursor-pointer hover:bg-green-900 active:scale-98 flex-1 py-2 rounded font-semibold transition"
         >
-          <Phone className="w-5 h-5" />
-          <span>문의하기</span>
+          문의하기
         </button>
       </div>
 
