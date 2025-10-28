@@ -185,7 +185,7 @@ export default function FilterPanel({
         <Accordion type="multiple" defaultValue={["basic"]} className="w-full">
           {Object.entries(groupedFilters).map(([groupKey, configs]) => (
             <AccordionItem value={groupKey} key={groupKey} className="border-b">
-              <AccordionTrigger className="text-base font-semibold hover:no-underline py-3">
+              <AccordionTrigger className="text-base font-semibold hover:no-underline py-3 cursor-pointer">
                 {GROUP_LABELS[groupKey] || "기타"}
               </AccordionTrigger>
               <AccordionContent className="pb-4 pt-2">
@@ -223,12 +223,15 @@ export default function FilterPanel({
                               handleChange(f.key, finalValue);
                             }}
                           >
-                            <SelectTrigger id={f.key} className="h-10 text-sm">
+                            <SelectTrigger
+                              id={f.key}
+                              className="h-10 text-sm cursor-pointer w-full"
+                            >
                               <SelectValue
                                 placeholder={f.placeholder || f.label}
                               />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent className="cursor-pointer">
                               <SelectItem value={SELECT_PLACEHOLDER_VALUE}>
                                 {f.placeholder || f.label}
                               </SelectItem>
@@ -263,7 +266,7 @@ export default function FilterPanel({
                                   value={opt}
                                   variant="outline"
                                   size="sm"
-                                  className="text-sm rounded-md data-[state=on]:bg-green-600 data-[state=on]:text-white"
+                                  className="text-sm rounded-md data-[state=on]:bg-green-600 data-[state=on]:text-white cursor-pointer"
                                 >
                                   {opt}
                                 </ToggleGroupItem>
@@ -333,7 +336,7 @@ export default function FilterPanel({
                               onValueChange={(value) =>
                                 handleChange(f.key, value[0])
                               }
-                              className="w-full mt-1 mb-1"
+                              className="w-full mt-1 mb-1 cursor-pointer"
                             />
                             <div className="flex justify-between text-xs text-gray-500 px-1 pt-0.5">
                               <span>최소</span>
@@ -380,7 +383,7 @@ export default function FilterPanel({
                                 onValueChange={(value) =>
                                   handleRangeSliderChange(f.key, value)
                                 }
-                                className="w-full"
+                                className="w-full cursor-pointer"
                               />
                               {filterState?.[f.key] && (
                                 <div className="flex justify-between text-sm text-gray-600 mt-1 px-1">
