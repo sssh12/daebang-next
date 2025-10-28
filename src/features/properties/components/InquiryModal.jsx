@@ -123,7 +123,7 @@ export default function InquiryModal({ property, onClose }) {
               문의하시려면 회원가입 혹은 로그인이 필요합니다.
             </p>
             <Link href="/login">
-              <button className="w-full bg-green-text-green-600 text-white py-2 px-4 rounded font-semibold hover:bg-green-900 transition active:scale-98 cursor-pointer">
+              <button className="w-full bg-green-600 text-white py-2 px-4 rounded font-semibold hover:bg-green-900 transition active:scale-98 cursor-pointer">
                 로그인
               </button>
             </Link>

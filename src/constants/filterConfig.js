@@ -97,20 +97,21 @@ export const FILTER_CONFIG = [
   },
   {
     group: "basic",
-    key: "tradeType",
-    label: "거래 유형",
-    type: "radio",
-    options: TRADE_TYPES,
-    default: "전체",
-  },
-  {
-    group: "basic",
     key: "distanceMinutes",
     label: "학교까지 거리",
     type: "radio",
     options: DISTANCE_OPTIONS,
     default: "전체",
   },
+  {
+    group: "basic",
+    key: "tradeType",
+    label: "거래 유형",
+    type: "radio",
+    options: TRADE_TYPES,
+    default: "전체",
+  },
+
   {
     group: "basic",
     key: "nearbyFacilities",

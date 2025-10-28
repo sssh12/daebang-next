@@ -12,6 +12,7 @@ export const useMapStore = create((set) => ({
   currentZoom: 3,
   minZoom: 2,
   maxZoom: 5,
+  isFilterPanelOpen: false,
 
   setProperties: (properties) => set({ properties }),
   setSelectedProperty: (property) => set({ selectedProperty: property }),
@@ -23,6 +24,8 @@ export const useMapStore = create((set) => ({
   setMapInstance: (map) => set({ mapInstance: map }),
   setCurrentZoom: (zoom) => set({ currentZoom: zoom }),
   setZoomLimits: ({ min, max }) => set({ minZoom: min, maxZoom: max }),
+
+  setFilterPanelOpen: (isOpen) => set({ isFilterPanelOpen: isOpen }),
 
   fetchProperties: async (bounds) => {
     if (!bounds) return;
@@ -41,12 +44,19 @@ export const useMapStore = create((set) => ({
     try {
       const response = await fetch(`/api/properties?${query}`);
       if (!response.ok) {
-        throw new Error("Failed to fetch properties");
+        console.error(
+          "Failed to fetch properties:",
+          response.status,
+          response.statusText
+        );
+        const errorBody = await response.text();
+        console.error("Error body:", errorBody);
+        throw new Error(`Failed to fetch properties: ${response.status}`);
       }
       const data = await response.json();
       set({ properties: data });
     } catch (error) {
-      console.error(error);
+      console.error("Error in fetchProperties:", error);
       set({ properties: [] });
     } finally {
       set({ isLoading: false });

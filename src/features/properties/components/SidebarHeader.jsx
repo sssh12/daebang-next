@@ -3,7 +3,7 @@
 import { RotateCcw, ListFilterPlus, X } from "lucide-react";
 
 export default function SidebarHeader({
-  filterValues,
+  hasActiveFilters,
   onFilterButton,
   onResetFilter,
   headerRef,
@@ -18,6 +18,7 @@ export default function SidebarHeader({
         <input
           className="w-full border border-gray-400 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-green-600 focus:border-transparent"
           placeholder="검색어 입력(구현 예정)"
+          // TODO: 검색 기능 구현 시 필요한 상태 및 핸들러 연결
         />
         <button
           className="w-1/4 h-full bg-green-600 hover:bg-green-900 text-white px-2 py-1 rounded font-semibold transition cursor-pointer active:scale-98"
@@ -32,7 +33,8 @@ export default function SidebarHeader({
             )}
           </div>
         </button>
-        {filterValues && (
+
+        {hasActiveFilters && (
           <button
             className="px-2 py-1 h-full border border-gray-300 rounded text-gray-500 hover:bg-gray-100 flex items-center justify-center cursor-pointer transition"
             onClick={onResetFilter}

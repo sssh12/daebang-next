@@ -8,11 +8,10 @@ import { getDistance } from "../utils/getDistance";
 import { createClient } from "@/lib/supabase/client";
 import { filterComparators, isActiveFilter } from "../utils/filterUtils";
 import { useMapStore } from "@/store/mapStore";
+import { getDefaultFilterValues } from "@/constants/filterConfig";
 
 export default function Sidebar() {
   const [departmentBuildings, setDepartmentBuildings] = useState([]);
-  const [filterOpen, setFilterOpen] = useState(false);
-  const [filterVisible, setFilterVisible] = useState(false);
   const headerRef = useRef(null);
   const supabase = createClient();
 
@@ -22,6 +21,8 @@ export default function Sidebar() {
     setFilterValues,
     setHighlightedIds,
     setSelectedSchool,
+    isFilterPanelOpen,
+    setFilterPanelOpen,
   } = useMapStore();
 
   useEffect(() => {
@@ -31,12 +32,15 @@ export default function Sidebar() {
           .from("department")
           .select("id, name, building_lat, building_lng")
           .eq("id", Number(filterValues.department));
+
         if (!error && data && data.length > 0) {
           setDepartmentBuildings(data);
           setSelectedSchool(data[0]);
         } else {
           setDepartmentBuildings([]);
           setSelectedSchool(null);
+          if (error)
+            console.error("Error fetching department building:", error);
         }
       } else {
         setDepartmentBuildings([]);
@@ -46,95 +50,118 @@ export default function Sidebar() {
     fetchBuildings();
   }, [filterValues?.department, setSelectedSchool, supabase]);
 
+  // highlightedIds useMemo는 변경 없음
   const highlightedIds = useMemo(() => {
     if (!filterValues) return new Set();
-
-    if (filterValues.department && departmentBuildings.length === 0) {
+    let targetCoords = null;
+    if (filterValues.department && departmentBuildings.length > 0) {
+      const building = departmentBuildings[0];
+      if (
+        building.building_lat &&
+        building.building_lng &&
+        !isNaN(Number(building.building_lat)) &&
+        !isNaN(Number(building.building_lng))
+      ) {
+        targetCoords = {
+          lat: Number(building.building_lat),
+          lng: Number(building.building_lng),
+        };
+      }
+    }
+    const activeFiltersEntries = Object.entries(filterValues).filter(
+      ([key, value]) => isActiveFilter(key, value, filterValues)
+    );
+    const hasOtherActiveFilters = activeFiltersEntries.some(
+      ([key, _]) => key !== "department"
+    );
+    if (
+      activeFiltersEntries.length === 0 ||
+      (activeFiltersEntries.length === 1 &&
+        activeFiltersEntries[0][0] === "department" &&
+        !hasOtherActiveFilters)
+    ) {
       return new Set();
     }
-
-    const activeFilters = Object.entries(filterValues).filter(([key, value]) =>
-      isActiveFilter(key, value)
-    );
-
-    if (activeFilters.length === 0) return new Set();
-
+    if (filterValues.department && !targetCoords && !hasOtherActiveFilters) {
+      return new Set();
+    }
     return new Set(
       properties
         .filter((p) => {
-          if (filterValues.department && departmentBuildings.length > 0) {
-            const DIST_LIMIT = 400;
-            const building = departmentBuildings[0];
-            if (!p.lat || !p.lng) return false;
-            const dist = getDistance(
-              Number(building.building_lat),
-              Number(building.building_lng),
-              p.lat,
-              p.lng
-            );
-            if (dist > DIST_LIMIT) return false;
-          }
-          return activeFilters.every(([key, value]) => {
+          return activeFiltersEntries.every(([key, value]) => {
             if (key === "department") return true;
-            return filterComparators[key]
-              ? filterComparators[key](p, value)
-              : true;
+            const comparator = filterComparators[key];
+            if (!comparator) return true;
+            if (key === "distanceMinutes") {
+              if (!targetCoords) return true;
+              return comparator(p, value, targetCoords);
+            }
+            if (key === "moveInDate") {
+              return comparator(p, value, filterValues);
+            }
+            if (key === "availabilityOptions") return true;
+            return comparator(p, value, filterValues);
           });
         })
         .map((p) => p.id)
     );
   }, [properties, filterValues, departmentBuildings]);
 
+  const hasActiveFilters = useMemo(() => {
+    if (!filterValues) return false;
+    return Object.entries(filterValues).some(([key, value]) =>
+      isActiveFilter(key, value, filterValues)
+    );
+  }, [filterValues]);
+
   useEffect(() => {
     setHighlightedIds(highlightedIds);
   }, [highlightedIds, setHighlightedIds]);
 
   const sortedProperties = useMemo(() => {
-    if (!filterValues || highlightedIds.size === 0) return properties;
+    if (highlightedIds.size === 0) return properties;
     const recommended = [];
     const others = [];
-    for (const p of properties) {
-      if (highlightedIds.has(p.id)) recommended.push(p);
-      else others.push(p);
-    }
+    const propertyMap = new Map(properties.map((p) => [p.id, p]));
+    highlightedIds.forEach((id) => {
+      const prop = propertyMap.get(id);
+      if (prop) {
+        recommended.push(prop);
+        propertyMap.delete(id);
+      }
+    });
+    others.push(...propertyMap.values());
     return [...recommended, ...others];
-  }, [properties, highlightedIds, filterValues]);
+  }, [properties, highlightedIds]);
 
   const handleFilterButton = () => {
-    if (!filterOpen) {
-      setFilterOpen(true);
-      setTimeout(() => setFilterVisible(true), 10);
-    } else {
-      setFilterVisible(false);
-      setTimeout(() => setFilterOpen(false), 200);
-    }
+    setFilterPanelOpen(!isFilterPanelOpen);
   };
 
-  const handleResetFilter = () => setFilterValues(null);
+  const handleResetFilter = () => setFilterValues(getDefaultFilterValues());
 
   return (
     <aside className="flex flex-col h-full relative">
       <SidebarHeader
-        filterValues={filterValues}
+        hasActiveFilters={hasActiveFilters}
         onFilterButton={handleFilterButton}
         onResetFilter={handleResetFilter}
         headerRef={headerRef}
-        filterOpen={filterOpen}
+        filterOpen={isFilterPanelOpen}
       />
-      {filterOpen && (
+
+      {isFilterPanelOpen && (
         <FilterPanel
-          visible={filterVisible}
-          onClose={() => {
-            setFilterVisible(false);
-            setTimeout(() => setFilterOpen(false), 200);
-          }}
+          visible={isFilterPanelOpen}
+          initialValues={filterValues || getDefaultFilterValues()}
+          onClose={() => setFilterPanelOpen(false)}
           onApply={(values) => {
             setFilterValues(values);
-            setFilterVisible(false);
-            setTimeout(() => setFilterOpen(false), 200);
+            setFilterPanelOpen(false);
           }}
         />
       )}
+
       <PropertyList
         properties={sortedProperties}
         highlightedIds={highlightedIds}

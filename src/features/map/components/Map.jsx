@@ -14,7 +14,6 @@ export default function Map({ center, zoom }) {
   const mapRef = useRef(null);
   const overlaysRef = useRef([]);
   const schoolOverlayRef = useRef(null);
-
   const mapInstance = useRef(null);
 
   const {
@@ -27,6 +26,8 @@ export default function Map({ center, zoom }) {
     setMapInstance,
     setCurrentZoom,
     setZoomLimits,
+    setFilterPanelOpen,
+    isCalculatingHighlights,
   } = useMapStore();
 
   const [hoveredId, setHoveredId] = useState(null);
@@ -34,17 +35,14 @@ export default function Map({ center, zoom }) {
 
   const drawOverlays = useCallback(() => {
     if (!mapInstance.current || !window.kakao?.maps) return;
-
     overlaysRef.current.forEach((overlay) => overlay.setMap(null));
     overlaysRef.current = [];
-
     const clusters = getPixelClusters(properties, mapInstance.current, 44);
-
     clusters.forEach((group) => {
       if (group.length === 1) {
         const property = group[0];
-        const isHighlighted = highlightedIds.has(property.id);
-
+        const isHighlighted =
+          !isCalculatingHighlights && highlightedIds.has(property.id);
         const div = createMarkerOverlay({
           isHighlighted,
           onHover: () => setHoveredId(property.id),
@@ -55,7 +53,6 @@ export default function Map({ center, zoom }) {
             setTimeout(() => setActiveId(null), 300);
           },
         });
-
         const overlay = new window.kakao.maps.CustomOverlay({
           position: new window.kakao.maps.LatLng(
             Number(property.lat),
@@ -64,7 +61,6 @@ export default function Map({ center, zoom }) {
           content: div,
           yAnchor: 1,
         });
-
         overlay.setMap(mapInstance.current);
         overlaysRef.current.push(overlay);
       } else {
@@ -72,10 +68,9 @@ export default function Map({ center, zoom }) {
           group.reduce((acc, cur) => acc + Number(cur.lat), 0) / group.length;
         const centerLng =
           group.reduce((acc, cur) => acc + Number(cur.lng), 0) / group.length;
-        const hasRecommended = group.some((item) =>
-          highlightedIds.has(item.id)
-        );
-
+        const hasRecommended =
+          !isCalculatingHighlights &&
+          group.some((item) => highlightedIds.has(item.id));
         const div = createClusterOverlay({
           hasRecommended,
           count: group.length,
@@ -88,25 +83,27 @@ export default function Map({ center, zoom }) {
             );
           },
         });
-
         const overlay = new window.kakao.maps.CustomOverlay({
           position: new window.kakao.maps.LatLng(centerLat, centerLng),
           content: div,
           yAnchor: 1,
         });
-
         overlay.setMap(mapInstance.current);
         overlaysRef.current.push(overlay);
       }
     });
-  }, [properties, highlightedIds, setSelectedProperty]);
+  }, [
+    properties,
+    highlightedIds,
+    setSelectedProperty,
+    isCalculatingHighlights,
+  ]);
 
   useEffect(() => {
     const script = document.createElement("script");
     script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_MAP_API_KEY}&autoload=false&libraries=clusterer`;
     script.async = true;
     document.head.appendChild(script);
-
     script.onload = () => {
       window.kakao.maps.load(() => {
         const mapOptions = {
@@ -120,7 +117,6 @@ export default function Map({ center, zoom }) {
         setMapInstance(map);
         setCurrentZoom(map.getLevel());
         setZoomLimits({ min: mapOptions.minLevel, max: mapOptions.maxLevel });
-
         let debounceTimeout;
         window.kakao.maps.event.addListener(map, "idle", () => {
           clearTimeout(debounceTimeout);
@@ -128,7 +124,6 @@ export default function Map({ center, zoom }) {
             setMapBounds(map.getBounds());
           }, 100);
         });
-
         window.kakao.maps.event.addListener(map, "zoom_changed", () => {
           setCurrentZoom(map.getLevel());
           if (schoolOverlayRef.current) {
@@ -139,34 +134,44 @@ export default function Map({ center, zoom }) {
           }
           drawOverlays();
         });
-
+        window.kakao.maps.event.addListener(map, "click", () => {
+          if (useMapStore.getState().isFilterPanelOpen) {
+            setFilterPanelOpen(false);
+          }
+        });
+        window.kakao.maps.event.addListener(map, "dragstart", () => {
+          if (useMapStore.getState().isFilterPanelOpen) {
+            setFilterPanelOpen(false);
+          }
+        });
         setMapBounds(map.getBounds());
       });
     };
-
     return () => {
       const scripts = document.head.getElementsByTagName("script");
       for (let i = 0; i < scripts.length; i++) {
         if (scripts[i].src.includes("dapi.kakao.com")) {
-          document.head.removeChild(scripts[i]);
+          try {
+            document.head.removeChild(scripts[i]);
+          } catch (e) {}
           break;
         }
       }
+      mapInstance.current = null;
+      setMapInstance(null);
     };
   }, []);
 
   useEffect(() => {
     drawOverlays();
-  }, [properties, highlightedIds, drawOverlays]);
+  }, [properties, highlightedIds, isCalculatingHighlights, drawOverlays]);
 
   useEffect(() => {
     if (!mapInstance.current || !window.kakao?.maps) return;
-
     if (schoolOverlayRef.current) {
       schoolOverlayRef.current.setMap(null);
       schoolOverlayRef.current = null;
     }
-
     if (selectedSchool?.building_lat && selectedSchool?.building_lng) {
       const div = createSchoolOverlay();
       const position = new window.kakao.maps.LatLng(
@@ -178,24 +183,30 @@ export default function Map({ center, zoom }) {
         content: div,
         yAnchor: 1,
       });
-
       const currentLevel = mapInstance.current.getLevel();
       if (currentLevel <= SCHOOL_MARKER_MAX_LEVEL) {
         overlay.setMap(mapInstance.current);
       }
-
       schoolOverlayRef.current = overlay;
+
       mapInstance.current.setCenter(position);
     }
   }, [selectedSchool]);
 
   useEffect(() => {
     if (selectedProperty && mapInstance.current?.setCenter) {
-      const moveLatLng = new window.kakao.maps.LatLng(
-        selectedProperty.lat,
-        selectedProperty.lng
-      );
-      mapInstance.current.setCenter(moveLatLng);
+      if (
+        selectedProperty.lat &&
+        selectedProperty.lng &&
+        !isNaN(Number(selectedProperty.lat)) &&
+        !isNaN(Number(selectedProperty.lng))
+      ) {
+        const moveLatLng = new window.kakao.maps.LatLng(
+          Number(selectedProperty.lat),
+          Number(selectedProperty.lng)
+        );
+        mapInstance.current.setCenter(moveLatLng);
+      }
     }
   }, [selectedProperty]);
 
