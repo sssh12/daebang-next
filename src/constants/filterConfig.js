@@ -174,7 +174,7 @@ export const FILTER_CONFIG = [
     min: 0,
     max: 50,
     step: 1,
-    default: [0, 15],
+    default: [0, 50],
     unit: "평",
   },
 

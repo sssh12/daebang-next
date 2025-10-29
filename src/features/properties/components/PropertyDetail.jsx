@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import {
   Undo2,
@@ -36,6 +36,50 @@ const sqmToPyeong = (sqm) => {
 export default function PropertyDetail({ property, onClose }) {
   const [imgIdx, setImgIdx] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [address, setAddress] = useState(property?.address || "주소 정보 없음");
+  const [isLoadingAddress, setIsLoadingAddress] = useState(false);
+
+  useEffect(() => {
+    if (
+      !property?.address &&
+      property?.lat &&
+      property?.lng &&
+      window.kakao &&
+      window.kakao.maps &&
+      window.kakao.maps.services
+    ) {
+      setIsLoadingAddress(true);
+      const geocoder = new window.kakao.maps.services.Geocoder();
+      const coord = new window.kakao.maps.LatLng(
+        Number(property.lat),
+        Number(property.lng)
+      );
+
+      const callback = function (result, status) {
+        if (status === window.kakao.maps.services.Status.OK) {
+          const roadAddress = result[0].road_address
+            ? result[0].road_address.address_name
+            : null;
+          const jibunAddress = result[0].address
+            ? result[0].address.address_name
+            : null;
+          setAddress(roadAddress || jibunAddress || "주소 변환 실패");
+        } else {
+          setAddress("주소 변환 실패");
+          console.error("Geocoder failed due to: " + status);
+        }
+        setIsLoadingAddress(false);
+      };
+
+      geocoder.coord2Address(coord.getLng(), coord.getLat(), callback);
+    } else if (property?.address) {
+      setAddress(property.address);
+      setIsLoadingAddress(false);
+    } else {
+      setAddress("주소 정보 없음");
+      setIsLoadingAddress(false);
+    }
+  }, [property]);
 
   if (!property) return null;
 
@@ -181,7 +225,7 @@ export default function PropertyDetail({ property, onClose }) {
             </h1>
             <p className="text-sm text-gray-600 flex items-center">
               <MapPin className="w-4 h-4 mr-1 text-gray-400" />{" "}
-              {property.address || "주소 정보 없음"}
+              {isLoadingAddress ? "주소 로딩 중..." : address}
             </p>
           </div>
           <div className="border-t pt-4">

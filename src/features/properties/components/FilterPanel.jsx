@@ -409,6 +409,7 @@ export default function FilterPanel({
                               onCheckedChange={(checked) =>
                                 handleChange(f.key, checked)
                               }
+                              className="cursor-pointer"
                             />
                           </div>
                         )}
